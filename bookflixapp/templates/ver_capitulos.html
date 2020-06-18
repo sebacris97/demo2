@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>{{titulo}}</h2>
+
+<table  class="table">
+
+	<tr>
+		<td>NUMERO</td>
+		<td>PAGINAS</td>
+	</tr>
+
+	{% for capitulo in capitulos %}
+
+	<tr>
+		<td><a href="{{capitulo.pdf.url}}">{{capitulo.numero}}</a></td>
+		<td>{{capitulo.nropaginas}}</td>
+	</tr>
+
+	{% endfor %}
+
+</table>
+
+{% endblock %}
+

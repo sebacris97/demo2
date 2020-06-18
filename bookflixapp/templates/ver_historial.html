@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+
+<br><br>
+
+{% if  historial %}
+
+<table class="table">
+  <thead class="thead-light">
+    <tr>
+      <th scope="col">TITULO</th>
+      <th scope="col">AUTOR</th>
+      <th scope="col">EDITORIAL</th>
+      <th scope="col">AÑO EDICION</th>
+    </tr>
+  </thead>
+  <tbody>
+	{% for libro in historial %}
+    <tr>
+      <th scope="row"><a href="/verCapitulos/{{libro.id}}">{{libro}}</a></th>
+      <td>{{libro.autor}}</td>
+      <td>{{libro.editorial}}</td>
+      <td>{{libro.agnoedicion}}</td>
+    </tr>
+	{% endfor %}
+  </tbody>
+</table>
+
+{% else %}
+
+    <h3> No hay libros para mostrar, vuelve mas tarde <h3>
+
+{% endif %}
+
+{% endblock %}
+
+
+
