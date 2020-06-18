@@ -80,10 +80,6 @@ def index(request):
     delt = timedelta(days=7)
     aux = d.date()
     novedades = Novedad.objects.filter(creacion__gte=d)
-    if request.user.is_authenticated:
-        perfil = perfil_actual(request)
-        nombre_perfil = str(perfil) 
-        return render(request, "index.html", {"novedades": novedades,"nombre_perfil":nombre_perfil})
     return render(request, "index.html", {"novedades": novedades})
 
 def register(request):
