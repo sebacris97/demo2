@@ -8,24 +8,69 @@
 
 {% block content %}
 
-<div class="container">
+
+<style>
 
 
-<div class="row">
 
-<div class="col-5">
+/* xs < 768 */
+@media screen and (max-width: 767px) {
+    body {
+        font-size: 0.9em;
+    }
+}
+
+/* sm */
+@media screen and (min-width: 768px) {
+    body {
+        font-size: 1em;
+    }
+}
+
+/* md */
+@media screen and (min-width: 992px) {
+    body {
+        font-size: 1.2em;
+    }
+}
+
+/* lg */
+@media screen and (min-width: 1200px) {
+    body {
+        font-size: 1.3em;
+    }
+}
+
+</style>
+
+<br>
+
+<div class="row justify-content-center">
+
+<div class="col-md-5">
 
 <h3 align="center">Adelantos</h3>
-<hr>
-<div  class="pre-scrollable" align="center">
+<div  class="container-fluid card pre-scrollable" align="center">
 	{% if trailers %}
-		{% for trailer in trailers %}
-				 <small class="text-muted">{{trailer.creacion}}</small> </br>
-				<h4 align="center"> {{trailer.titulo}} </h4>
-				<img src="{{trailer.get_imagen}}" style="width:150px;height:200px;">
-				{{trailer.texto|linebreaks}} </br></br>
-				<hr>
-		{% endfor %}
+		{% for trailer in trailers %} <br>
+			<div class="card">
+				<div class="row">
+					<div class="col-4">
+					 <h4 align="center"> {{trailer.titulo}} </h4>
+					</div>
+					<div class="col-8">
+					<small class="text-muted float-right">{{trailer.creacion}}</small>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12">	
+						<img class="img-fluid img-thumbnail" src="{{trailer.get_imagen}}" style="width:150px;height:200px;">
+						
+						<p>{{trailer.texto|linebreaks}}</p>
+					</div>
+				</div>
+			</div>
+		{% endfor %} <br>
 	{% else %}
 		<small class="text-muted">No hay adelantos</small>
 	{% endif %}
@@ -34,18 +79,19 @@
 
 </div> <!--fin columna-->
 
-<div class="col-5 offset-2">
+<div class="col-md-5">
 
 <h3 align="center">Novedades</h3>
-<hr>
-<div  class="pre-scrollable" align="center">
+<div  class="container-fluid card pre-scrollable" align="center">
 	{% if novedades %}
 		{% for novedad in novedades %}
-				 <small class="text-muted">{{novedad.creacion}}</small> </br>
+			<br>
+			<div class="card">
+				 <small class="text-muted">{{novedad.creacion}}</small>
 				<h4 align="center"> {{novedad.titulo}} </h4>
-				{{novedad.texto|linebreaks}} </br></br>
-				<hr>
-		{% endfor %}
+				<p>{{novedad.texto|linebreaks}}</p>
+			</div>
+		{% endfor %} <br>
 	{% else %}
 		<small class="text-muted">No hay novedades</small>
 	{% endif %}
@@ -59,11 +105,11 @@
 
 
 <div class="row">
-<div class="col-12">
+<div class="col-12  col-sm-12">
 
 {% if user.is_authenticated %}
 	<h2 align="center">Área para miembros</h2>
-
+	
 	<p align="center">
 		Bienvenido <b>{{nombre_perfil}}</b>,
 		esta página es exclusiva para usuarios registrados.
@@ -74,7 +120,7 @@
 </div>      <!--fin columna-->
 
 
-</div>    <!--fin container principal-->
+
 
 {% endblock %}
 
