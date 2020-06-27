@@ -6,7 +6,7 @@
 <h2>Iniciar sesión</h2>
 
 <form method="POST">
-  {% csrf_token %}
+
   <div class="form-group">
     <label for="exampleInputEmail1">Email</label>
     <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
@@ -19,13 +19,11 @@
     <input type="checkbox" class="form-check-input" id="exampleCheck1">
     <label class="form-check-label" for="exampleCheck1">Recuerdame</label>
   </div>
+
+  {% csrf_token %}
+
+
   <button type="submit" class="btn btn-primary">Login</button>
 </form>
-
-<!--<form method="POST">
-    {{ form.as_p }}
-    {% csrf_token %}
-    <button type="submit">Login</button>
-</form>-->
 
 {% endblock %}

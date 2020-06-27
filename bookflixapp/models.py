@@ -75,7 +75,11 @@ class Libro(models.Model):
     editorial = models.ForeignKey(Editorial, on_delete=models.CASCADE)
     genero = models.ManyToManyField(Genero)
     agnoedicion = models.DateField(verbose_name="Año de edicion")
-    trailer = models.TextField(max_length=500, null=True)
+
+    trailer = models.ForeignKey('Trailer',on_delete=models.CASCADE)
+
+    def get_trailer(self):
+        return self.trailer.get_texto()
 
     def __str__(self):
         return self.titulo
@@ -84,10 +88,8 @@ class Libro(models.Model):
         verbose_name_plural = "Libros"
         ordering = ["titulo"]
 
-    def content_file_name(instance, filename):
-        nombre = filename
-        return '/'.join(['libros', instance.titulo, nombre])
-    imagen = models.ImageField(null=True, upload_to=content_file_name)
+    def get_imagen(self):
+        return self.trailer.get_imagen()
 
 
 class Novedad(models.Model):
@@ -100,6 +102,7 @@ class Novedad(models.Model):
 
     class Meta:
         verbose_name_plural = "Novedades"
+
         ordering = ["-creacion"]
 
 
@@ -118,7 +121,31 @@ class Usuario(models.Model):
     def __str__(self):
         return self.user.email
 
+class Trailer(models.Model):
 
+    def content_file_name(instance, filename):
+        nombre = filename
+        return '/'.join(['trailers', instance.titulo, nombre]) 
+
+    titulo = models.CharField(max_length=200,default='NONE',verbose_name="Titulo")
+    imagen = models.ImageField(null=True, upload_to=content_file_name, default='default.jpg',verbose_name="Imagen")
+    texto = models.TextField(max_length=500,default='NONE', verbose_name="Texto")
+    creacion = models.DateTimeField(auto_now_add=True, verbose_name="Creacion")
+
+    def __str__(self):
+        return self.titulo + ' trailer'
+
+    class Meta:
+        verbose_name_plural = "Trailers"
+        ordering = ["-creacion"]
+
+    def get_texto(self):
+        return self.texto
+
+    def get_imagen(self):
+        return self.imagen.url
+        
+    
 class Perfil(models.Model):
     usuario = models.ForeignKey('Usuario', on_delete=models.SET_NULL, null=True)
     username = models.CharField(max_length=20)

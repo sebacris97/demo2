@@ -7,14 +7,14 @@
 <table  class="table">
 
 	<tr>
-		<td>NUMERO</td>
+		<td>NUMERO DE CAPITULO</td>
 		<td>PAGINAS</td>
 	</tr>
 
 	{% for capitulo in capitulos %}
 
 	<tr>
-		<td><a href="{{capitulo.pdf.url}}">{{capitulo.numero}}</a></td>
+		<td><a href="{{capitulo.pdf.url}}">Capitulo {{capitulo.numero}}</a></td>
 		<td>{{capitulo.nropaginas}}</td>
 	</tr>
 

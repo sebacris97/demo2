@@ -1,7 +1,26 @@
-<!doctype html>
 {% extends 'base.html' %}
+{% load static %}
+
+
+
+{% block head %}
+
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+
+{% endblock head %}
+
 
 {% block content %}
+
+
+
+<br>
+
+
 
 	<form>
 		{{ filter.form.as_p }}
@@ -10,29 +29,65 @@
 
 <br>
 
-{% for libro in filter.qs %}
 
-<div id="lista">
-	<h1><a href="/verCapitulos/{{libro.id}}">{{libro.titulo}}</a></h1>
-	<a href="/verCapitulos/{{libro.id}}">
-	    <img style="float:left" width=300px height=400p src="{{libro.imagen.url}}">
-	</a>
-	<p style="font-size:20px">
-	<br><strong>Paginas: </strong>{{libro.nropaginas}}
-	<br><strong>Capitulos: </strong>{{libro.nrocapitulos}}
-	<br><strong>ISBN: </strong>{{libro.isbn}}
-	<br><strong>Año de Edición: </strong>{{libro.agnoedicion}}
-	<br><strong>Autor: </strong>{{libro.autor}}
-	<br><strong>Editorial: </strong>{{libro.editorial}}
-	<br><strong>Genero: </strong>{% for genero in libro.genero.all %} {{genero}}, {% endfor %}
-	<br><strong>Trailer: </strong>{{libro.trailer}}</p>
-</div>
-<br><br><br>
-	{% endfor %}
 
-</table>
+<div class="row">
 
-<br><br><br>
 
-{% endblock %}
+    <div class="well well-sm">
+        <strong>Mostar: </strong>
+        <div class="btn-group">
+            <a href="#" id="list" class="btn btn-default btn-sm"><span class="fa fa-th-list">
+            </span>Lista</a> <a href="#" id="grid" class="btn btn-default btn-sm"><span
+                class="fa fa-th"></span>Cuadricula</a>
+        </div>
+    </div> 
+
+<br><br>
+
+<div id="products" class="row view-group">
+
+                {% for libro in filter.qs %}
+                <div class="item col-xs-4 col-lg-4">
+                    <div class="thumbnail card" style="width:100%">
+                        <div class="img-event">
+                            <img class="group list-group-image img-fluid ratio-4-3" src="{{libro.get_imagen}}" alt="" />
+                        </div>
+                        <div class="caption card-body">
+                            <h4 class="group card-title inner list-group-item-heading">
+                                {{libro.titulo}}</h4>
+                            <p class="group inner list-group-item-text">
+                                <strong>AUTOR: </strong>{{libro.autor}}</p>
+                            <p class="group inner list-group-item-text">
+                                <strong>EDITORIAL: </strong>{{libro.editorial}}</p>
+                            <p class="group inner list-group-item-text">
+                                <strong>GENERO: </strong>{% for genero in libro.genero.all %} {{genero}}, {% endfor %}</p>
+                            <p class="group inner list-group-item-text">
+                                <strong>FECHA DE EDICION: </strong>{{libro.agnoedicion}}</p>
+                            <p class="group inner list-group-item-text">
+                                <strong>ISBN: </strong>{{libro.isbn}}</p>
+                            <p class="group inner list-group-item-text">
+                                <strong>SINOPSIS: </strong>{{libro.get_trailer}}</p>
+                            <div class="row">
+                                <div class="col-xs-12 col-md-6">
+                                    <a class="btn btn-success" href="#">FAVORITOS</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            {% endfor %}
+            </div>
+
+
+
+<script type="text/javascript" src='{% static "js/ver_libros.js" %}'></script>
+<link href='{% static "css/ver_libros.css" %}' rel="stylesheet" type="text/css"/>
+
+
+
+
+{% endblock content %}
+
 

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Libro, Genero, Autor, Editorial, Novedad, Capitulo
+from .models import Libro, Genero, Autor, Editorial, Novedad, Capitulo, Trailer
 from rangefilter.filter import DateRangeFilter, DateTimeRangeFilter
 
 
@@ -26,6 +26,13 @@ class LibroAdmin(admin.ModelAdmin):
     search_fields = ('titulo', 'autor__nombre', 'editorial__nombre', 'genero__nombre',)
     list_filter = ('autor', 'editorial', ('agnoedicion', DateRangeFilter), 'genero')
     inlines = [CapituloInline]  # se registra en liro la clase creada anteriormente
+
+
+@admin.register(Trailer)
+class TrailerAdmin(admin.ModelAdmin):
+    list_display = ('titulo', 'creacion',)
+    search_fields = ('titulo', 'texto',)
+    list_filter = (('creacion', DateTimeRangeFilter), 'creacion')
 
 
 @admin.register(Genero)

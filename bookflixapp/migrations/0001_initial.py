@@ -110,7 +110,6 @@ class Migration(migrations.Migration):
                 ('isbn', models.CharField(max_length=13, unique=True, validators=[django.core.validators.RegexValidator('^(\\d{10}|\\d{13})$', 'El numero debe tener 10 o 13 digitos numericos')], verbose_name='ISBN')),
                 ('agnoedicion', models.DateField(verbose_name='Año de edicion')),
                 ('trailer', models.TextField(max_length=500, null=True)),
-                ('imagen', models.ImageField(null=True, upload_to=bookflixapp.models.Libro.content_file_name)),
                 ('autor', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bookflixapp.Autor')),
                 ('editorial', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bookflixapp.Editorial')),
                 ('genero', models.ManyToManyField(to='bookflixapp.Genero')),

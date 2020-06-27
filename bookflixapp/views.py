@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from bookflixapp.models import Libro, Novedad, Capitulo, Perfil, Usuario, UsuarioCust
+from bookflixapp.models import Trailer, Libro, Novedad, Capitulo, Perfil, Usuario
 from datetime import timedelta
 from django.utils import timezone
 from django.http import request as rq
@@ -79,8 +79,13 @@ def index(request):
     f = timezone.now()
     delt = timedelta(days=7)
     aux = d.date()
+    trailers = Trailer.objects.filter(creacion__gte=d)
     novedades = Novedad.objects.filter(creacion__gte=d)
-    return render(request, "index.html", {"novedades": novedades})
+    if request.user.is_authenticated:
+        perfil = perfil_actual(request)
+        nombre_perfil = str(perfil) 
+        return render(request, "index.html", {"trailers":trailers,"novedades": novedades,"nombre_perfil":nombre_perfil})
+    return render(request, "index.html", {"trailers":trailers,"novedades": novedades})
 
 def register(request):
     # Creamos el formulario de autenticación vacío
@@ -122,10 +127,9 @@ def register(request):
 
 def login(request):
     # Creamos el formulario de autenticación vacío
-    form = AuthenticationForm()
+    form = AuthenticationForm(None,request.POST)
     if request.method == "POST":
         # Añadimos los datos recibidos al formulario
-        form = AuthenticationForm(data=request.POST)
         # Si el formulario es válido...
         #if form.is_valid():
         # Recuperamos las credenciales validadas
@@ -138,15 +142,10 @@ def login(request):
             # Hacemos el login manualmente
             do_login(request, user)
             if user.is_superuser:
-                return redirect("/admin")  # or your url name
+                redirect("/admin")  # or your url name
                 # Y le redireccionamos a la portada
             else:
-                return redirect('/')
-            #return render(request, "index.html")
-        else:
-            return redirect('/register')
-        #else:
-            #return redirect('/register')
+                return redirect("/")
     # Si llegamos al final renderizamos el formulario
     return render(request, "login.html", {'form': form})
 
