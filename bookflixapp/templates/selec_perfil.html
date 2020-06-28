@@ -2,6 +2,9 @@
 
 
 {% block content %}
+
+<br>
+
 <title>Seleccionar Perfil</title>
     <div style="text-align:center;">
         <h3>Selecciona el perfil.</h3>
@@ -10,7 +13,10 @@
             {% for perfil in perfiles %}
                 <option name="nombe">{{perfil.username}}</option>
             {% endfor %}
-            </select>
+            </select> 
+
+<br><br>
+
         <p><input type="submit" value="Seleccionar"></p></form>
 
     </div>

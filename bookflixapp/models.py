@@ -106,9 +106,6 @@ class Novedad(models.Model):
         ordering = ["-creacion"]
 
 
-class UsuarioCust(User):
-    class Meta:
-        proxy = True
 
 
 class Usuario(models.Model):

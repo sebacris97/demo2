@@ -76,9 +76,6 @@ def ver_capitulos(request, pk):
 
 def index(request):
     d = timezone.now() - timedelta(days=7)
-    f = timezone.now()
-    delt = timedelta(days=7)
-    aux = d.date()
     trailers = Trailer.objects.filter(creacion__gte=d)
     novedades = Novedad.objects.filter(creacion__gte=d)
     if request.user.is_authenticated:
@@ -89,10 +86,9 @@ def index(request):
 
 def register(request):
     # Creamos el formulario de autenticación vacío
-    form = RegistrationForm()
+    form = RegistrationForm(data=request.POST or None)
     if request.method == "POST":
-        # Añadimos los datos recibidos al formulario
-        form = RegistrationForm(data=request.POST)
+        
         # Si el formulario es válido...
         if form.is_valid():
 
@@ -116,10 +112,6 @@ def register(request):
                 # Y le redireccionamos a la portada
                 return redirect('/')
 
-    # Si queremos borramos los campos de ayuda
-    #form.fields['username'].help_text = None
-    form.fields['password1'].help_text = None
-    form.fields['password2'].help_text = None
 
     # Si llegamos al final renderizamos el formulario
     return render(request, "register.html", {'form': form})

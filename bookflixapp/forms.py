@@ -1,6 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import Autor, Editorial, Genero, Usuario, UsuarioCust
+from .models import Autor, Editorial, Genero, Usuario
 from datetime import datetime as d
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -44,20 +44,38 @@ class FormularioAgregarLibro(forms.Form):
 
 
 class RegistrationForm(UserCreationForm):
+    tarjeta = forms.CharField(required=True, max_length=16, min_length=16)
+    fecha_de_nacimiento = forms.DateField(required=True)
+    
+    class Meta:
+        model = User
+        fields = ('first_name','last_name','email','password1', 'password2')
+
+    def clean_email(self):
+        data = self.cleaned_data["email"]
+        try:
+            user = User.objects.get(email=data)
+        except User.DoesNotExist:
+            return data
+        raise ValidationError("El email ya esta registrado")
+
+
+"""
+    fist_name = forms.CharField(required=True, max_length=35, min_length=1, label="Nombre")
+    last_name = forms.CharField(required=True, max_length=35, min_length=1, label="Apellido")
     email = forms.EmailField(required=True)
     tarjeta = forms.CharField(required=True, max_length=16, min_length=16)
     fecha_de_nacimiento = forms.DateField(required=True)
+    password1 = forms.CharField(widget=forms.PasswordInput(),
+                                max_length=128, min_length=8, label='Contraseña')
+    password2 = forms.CharField(widget=forms.PasswordInput(),
+                                max_length=128, min_length=8, label='Repita su contraseña')
 
-    class Meta:
-        model = UsuarioCust
-        fields = ("first_name",
-                  "last_name",
-                  "fecha_de_nacimiento",
-                  "email",
-                  "password1",
-                  "password2",
-                  "tarjeta",
-                  )
+    def clean_password1(self):
+        data1 = self.cleaned_data['password1']
+        data2 = self.cleaned_data['password2']
+        if data1 != data2:
+            raise ValidationError('Las contraseñas deben coincidir')
 
     def clean_email(self):
         data = self.cleaned_data["email"]
@@ -71,7 +89,13 @@ class RegistrationForm(UserCreationForm):
         data = self.cleaned_data['tarjeta']
         if not data.isdigit():
             raise ValidationError('Solo se admiten digitos numericos')
-        return data
+        #return data
+
+    class Meta:
+        model = Usuario
+        fields = '__all__'
+"""
+
 
 
 

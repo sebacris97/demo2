@@ -19,20 +19,18 @@
 <div class="col-md-5">
 
 <h3 align="center">Adelantos</h3>
-<div  class="container-fluid card pre-scrollable" align="center">
+<div  class="container-fluid card pre-scrollable" style="overflow-y:auto;" align="center">
 	{% if trailers %}
 		{% for trailer in trailers %} <br>
 			<div class="card">
 				<div class="row">
-					<div class="col-4">
-					 <h4 align="center"> {{trailer.titulo}} </h4>
-					</div>
-					<div class="col-8">
+					<div class="col-12">
 					<small class="text-muted float-right">{{trailer.creacion}}</small>
 					</div>
 				</div>
 				<div class="row">
-					<div class="col-12">	
+					
+					<div class="col-12"> <h4> {{trailer.titulo}} </h4>	
 						<img class="img-fluid img-thumbnail" src="{{trailer.get_imagen}}" style="width:150px;height:200px;">
 						
 						<p>{{trailer.texto|linebreaks}}</p>
@@ -52,7 +50,7 @@
 <div class="col-md-5">
 
 <h3 align="center">Novedades</h3>
-<div  class="container-fluid card pre-scrollable" align="center">
+<div  class="container-fluid card pre-scrollable" style="overflow-y:auto;" align="center">
 	{% if novedades %}
 		{% for novedad in novedades %}
 			<br>
