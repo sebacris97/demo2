@@ -1,9 +1,23 @@
 {% extends 'base_login.html' %}
 {% load static %}
 
-
-
 {% block content %}
+
+
+<style>
+input[type="search"]{
+    appearance: textfield;
+    -moz-appearance: textfield;
+    -webkit-appearance: textfield;
+
+}
+</style>
+
+
+  <!-- Fengyuan Chen's Datepicker -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
+
 
 <br>
 
@@ -16,6 +30,28 @@
     {{ form.as_p }}
     <button type="submit">Registrar</button>
 </form>
+
+
+
+
+
+  <script>
+    $(function () {
+      $("#id_fecha_de_nacimiento").datepicker({
+      format:'dd/mm/yyyy',
+      autoHide: true
+    });
+    });
+
+  document.getElementById("id_fecha_de_nacimiento").setAttribute("autocomplete", "off");
+  document.getElementById("id_fecha_de_nacimiento").setAttribute("onkeydown","return false");
+  document.getElementById("id_fecha_de_nacimiento").setAttribute("type","search");
+
+$('input[name="id_fecha_de_nacimiento"]').datepicker({ autoClose: true});
+
+  </script>
+
+
 
 <br>
 

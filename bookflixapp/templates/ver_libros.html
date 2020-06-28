@@ -3,18 +3,16 @@
 
 
 
-{% block head %}
-
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-
-
-{% endblock head %}
-
 
 {% block content %}
+
+
+
+<link href='{% static "css/ver_libros.css" %}' rel="stylesheet" type="text/css"/>
+
+  <!-- Fengyuan Chen's Datepicker -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
 
 
 
@@ -51,7 +49,7 @@
                 <div class="item col-xs-4 col-lg-4">
                     <div class="thumbnail card" style="width:100%">
                         <div class="img-event">
-                            <img class="group list-group-image img-fluid ratio-4-3" src="{{libro.get_imagen}}" alt="" />
+                            <img class="group list-group-image img-fluid" style="width:100%;height:100%;" src="{{libro.get_imagen}}" alt="" />
                         </div>
                         <div class="caption card-body">
                             <h4 class="group card-title inner list-group-item-heading">
@@ -83,7 +81,23 @@
 
 
 <script type="text/javascript" src='{% static "js/ver_libros.js" %}'></script>
-<link href='{% static "css/ver_libros.css" %}' rel="stylesheet" type="text/css"/>
+
+
+  <script>
+    $(function () {
+      $("#id_agnoedicion").datepicker({
+      format:'dd/mm/yyyy',
+      autoHide: true
+    });
+    });
+
+
+  document.getElementById("id_agnoedicion").setAttribute("autocomplete", "off");
+  document.getElementById("id_agnoedicion").setAttribute("onkeydown","return false");
+  document.getElementById("id_agnoedicion").setAttribute("type","search");
+
+
+  </script>
 
 
 

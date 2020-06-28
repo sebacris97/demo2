@@ -44,12 +44,18 @@ class FormularioAgregarLibro(forms.Form):
 
 
 class RegistrationForm(UserCreationForm):
+
+    fecha_de_nacimiento = forms.DateField(required=True, input_formats=['%d/%m/%Y'])
     tarjeta = forms.CharField(required=True, max_length=16, min_length=16)
-    fecha_de_nacimiento = forms.DateField(required=True)
-    
     class Meta:
         model = User
-        fields = ('first_name','last_name','email','password1', 'password2')
+        fields = ('first_name','last_name','email')
+
+    def __init__(self, *args, **kwargs):
+        super(RegistrationForm, self).__init__(*args, **kwargs)
+
+        for fieldname in ['username', 'password1', 'password2']:
+            self.fields['password2'].help_text = None
 
     def clean_email(self):
         data = self.cleaned_data["email"]
