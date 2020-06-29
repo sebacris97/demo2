@@ -25,6 +25,8 @@ urlpatterns = [
 
                 path('admin/', admin.site.urls, name='admin'),
                 path('', views.index, name='index'),
+
+                url(r'^post-search/$', views.post_search, name='post-search'),
                 path('perfil/', views.verperfil, name='verperfil'),
                 path('selecPerfil/', views.selecperfil, name='seleccionarPerfil'),
                 path('crearPerfil/', views.createprofile, name='crearPerfil'),

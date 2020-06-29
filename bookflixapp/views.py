@@ -73,13 +73,14 @@ def ver_capitulos(request, pk):
         return render(request, "index.html")  # si no se le subio capitulo te manda a index
 
 
+def post_search(request):
+    
+    return redirect('/verLibros/?titulo__icontains=' + request.POST['search'])
+
 def index(request):
     d = timezone.now() - timedelta(days=7)
     trailers = Trailer.objects.filter(creacion__gte=d)
     novedades = Novedad.objects.filter(creacion__gte=d)
-    if request.method == 'POST':
-        busqueda = request.POST['search']
-        return redirect('/verLibros/?titulo__icontains=' + busqueda)
     if request.user.is_authenticated:
         perfil = perfil_actual(request)
         nombre_perfil = str(perfil) 
