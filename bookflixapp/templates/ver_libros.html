@@ -25,11 +25,11 @@
 		<button type='submit'>Buscar</button>
 	</form>
 
-<br>
+<br><br>
 
 
 
-<div class="row">
+<div class="row-fluid">
 
 
     <div class="well well-sm">
@@ -41,14 +41,14 @@
         </div>
     </div> 
 
-<br><br>
+<br>
 
 <div id="products" class="row view-group">
 
                 {% for libro in filter.qs %}
                 <div class="item col-xs-4 col-lg-4">
                     <div class="thumbnail card" style="width:100%">
-                        <div class="img-event">
+                        <div class="img-event"> 
 	            <a href="/verCapitulos/{{libro.id}}">
                             <img class="group list-group-image img-fluid" style="width:100%;height:100%;" src="{{libro.get_imagen}}" alt="" />
 	            </a>
