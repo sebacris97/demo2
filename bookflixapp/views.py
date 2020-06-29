@@ -52,6 +52,7 @@ def ver_historial(request):
 
 def ver_libros(request):
     filtro = LibroFilter(request.GET, queryset=Libro.objects.all())
+    print(filtro)
     return render(request, "ver_libros.html", {"filter": filtro})
 
 

@@ -22,7 +22,7 @@
 
 	<form>
 		{{ filter.form.as_p }}
-		<button type='submit'>Buscar</button>
+		<button id="buscar-btn" type='submit'>Buscar</button>
 	</form>
 
 <br><br>
@@ -43,7 +43,11 @@
 
 <br>
 
+
+	{% if filter.qs %}
+
 <div id="products" class="row view-group">
+
 
                 {% for libro in filter.qs %}
                 <div class="item col-xs-4 col-lg-4">
@@ -80,6 +84,13 @@
                 
             {% endfor %}
             </div>
+
+		
+	{% else %}
+		<br><br>
+		<h3 style="text-align:center;">No hay ninguna coincidencia<h3>
+	{% endif %}
+
 
 
 
