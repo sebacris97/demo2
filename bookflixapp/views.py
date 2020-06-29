@@ -7,10 +7,9 @@ from django.http import request as rq
 from django.contrib.auth import logout as do_logout
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User, AnonymousUser
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import hashers
 from django.contrib.auth import login as do_login
-from .forms import RegistrationForm, CreateProfileForm
+from .forms import RegistrationForm, LoginForm, CreateProfileForm
 from .filters import LibroFilter
 
 # from .forms import FormularioAgregarLibro
@@ -114,16 +113,12 @@ def register(request):
 
 
     # Si llegamos al final renderizamos el formulario
-    return render(request, "register.html", {'form': form})
+    return render(request, "registration/register.html", {'form': form})
 
 
 def login(request):
     # Creamos el formulario de autenticación vacío
-    form = AuthenticationForm(None,request.POST)
     if request.method == "POST":
-        # Añadimos los datos recibidos al formulario
-        # Si el formulario es válido...
-        #if form.is_valid():
         # Recuperamos las credenciales validadas
         username = request.POST["email"]
         password = request.POST["pass"]
@@ -134,12 +129,12 @@ def login(request):
             # Hacemos el login manualmente
             do_login(request, user)
             if user.is_superuser:
-                redirect("/admin")  # or your url name
+                return redirect("/admin")  # or your url name
                 # Y le redireccionamos a la portada
             else:
                 return redirect("/")
     # Si llegamos al final renderizamos el formulario
-    return render(request, "login.html", {'form': form})
+    return render(request, "registration/login.html")
 
 
 def logout(request):

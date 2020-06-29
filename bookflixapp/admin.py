@@ -1,6 +1,48 @@
 from django.contrib import admin
-from .models import Libro, Genero, Autor, Editorial, Novedad, Capitulo, Trailer
+from .models import Usuario, Perfil, Libro, Genero, Autor, Editorial, Novedad, Capitulo, Trailer
 from rangefilter.filter import DateRangeFilter, DateTimeRangeFilter
+
+from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.models import User
+
+
+
+class ProfileInline(admin.StackedInline):
+    model = Usuario
+    can_delete = False
+    verbose_name_plural = 'Usuario'
+    fk_name = 'user'
+
+"""
+class PerfilInline(admin.StackedInline):
+    model = Perfil
+    can_delete = True
+    verbose_name_plural = 'Perfil'
+    fk_name = 'usuario'
+"""
+
+
+class CustomUserAdmin(UserAdmin):
+    inlines = (ProfileInline, )
+    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'get_nacimiento',)
+    list_select_related = ('usuario', )
+
+
+    
+    def get_nacimiento(self, instance):
+        return instance.usuario.fecha_de_nacimiento
+    get_nacimiento.short_description = 'Fecha de nacimiento'
+    def get_inline_instances(self, request, obj=None):
+        if not obj:
+            return list()
+        return super(CustomUserAdmin, self).get_inline_instances(request, obj)
+
+
+admin.site.unregister(User)
+admin.site.register(User, CustomUserAdmin)
+
+
+
 
 
 # Register your models here.

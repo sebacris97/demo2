@@ -3,9 +3,15 @@
 
 {% block content %}
 
+
+<br>
 <h2>Iniciar sesión</h2>
+<br>
 
 <form method="POST">
+
+
+  {% csrf_token %}
 
   <div class="form-group">
     <label for="exampleInputEmail1">Email</label>
@@ -20,8 +26,8 @@
     <label class="form-check-label" for="exampleCheck1">Recuerdame</label>
   </div>
 
-  {% csrf_token %}
 
+ {{form.as_p}}
 
   <button type="submit" class="btn btn-primary">Login</button>
 </form>
