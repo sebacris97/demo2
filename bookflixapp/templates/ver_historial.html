@@ -1,35 +1,82 @@
 {% extends 'base.html' %}
-
+{% load static %}
 
 {% block content %}
 
-<br><br>
 
 {% if  historial %}
 
-<table class="table">
-  <thead class="thead-light">
-    <tr>
-      <th scope="col">TITULO</th>
-      <th scope="col">AUTOR</th>
-      <th scope="col">EDITORIAL</th>
-      <th scope="col">AÑO EDICION</th>
-    </tr>
-  </thead>
-  <tbody>
-	{% for libro in historial %}
-    <tr>
-      <th scope="row"><a href="/verCapitulos/{{libro.id}}">{{libro}}</a></th>
-      <td>{{libro.autor}}</td>
-      <td>{{libro.editorial}}</td>
-      <td>{{libro.agnoedicion}}</td>
-    </tr>
-	{% endfor %}
-  </tbody>
-</table>
+<link href='{% static "css/ver_libros.css" %}' rel="stylesheet" type="text/css"/>
+
+  <!-- Fengyuan Chen's Datepicker -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
+
+
+
+<br>
+
+
+
+
+<div class="row-fluid">
+
+
+    <div class="well well-sm">
+        <strong>Mostar: </strong>
+        <div class="btn-group">
+            <a href="#" id="list" class="btn btn-default btn-sm"><span class="fa fa-th-list">
+            </span>Lista</a> <a href="#" id="grid" class="btn btn-default btn-sm"><span
+                class="fa fa-th"></span>Cuadricula</a>
+        </div>
+    </div> 
+
+<br>
+
+<div id="products" class="row view-group">
+
+                {% for libro in historial %}
+                <div class="item col-xs-4 col-lg-4">
+                    <div class="thumbnail card" style="width:100%">
+                        <div class="img-event"> 
+	            <a href="/verCapitulos/{{libro.id}}">
+                            <img class="group list-group-image img-fluid" style="width:100%;height:100%;" src="{{libro.get_imagen}}" alt="" />
+	            </a>
+                        </div>
+                        <div class="caption card-body">
+	            <a href="/verCapitulos/{{libro.id}}">
+                            <h4 class="group card-title inner list-group-item-heading">
+                                {{libro.titulo}}</h4></a>
+                            <p class="group inner list-group-item-text">
+                                <strong>AUTOR: </strong>{{libro.autor}}</p>
+                            <p class="group inner list-group-item-text">
+                                <strong>EDITORIAL: </strong>{{libro.editorial}}</p>
+                            <p class="group inner list-group-item-text">
+                                <strong>GENERO: </strong>{% for genero in libro.genero.all %} {{genero}}, {% endfor %}</p>
+                            <p class="group inner list-group-item-text">
+                                <strong>FECHA DE EDICION: </strong>{{libro.agnoedicion}}</p>
+                            <p class="group inner list-group-item-text">
+                                <strong>ISBN: </strong>{{libro.isbn}}</p>
+                            <p class="group inner list-group-item-text">
+                                <strong>SINOPSIS: </strong>{{libro.get_trailer}}</p>
+                            <div class="row">
+                                <div class="col-xs-12 col-md-6">
+                                    <a class="btn btn-success" href="#">FAVORITOS</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            {% endfor %}
+            </div>
+
+
+
 
 {% else %}
 
+    <br><br>
     <h3> No hay libros para mostrar, vuelve mas tarde <h3>
 
 {% endif %}
