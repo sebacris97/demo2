@@ -113,7 +113,11 @@ class Usuario(models.Model):
     tarjeta = models.CharField(max_length=16, validators=[
         RegexValidator('^(\d{16})$',
                        'Debe introducir un numero de 16 digitos')], verbose_name="Tarjeta de credito")
-    fecha_de_nacimiento = models.DateField()
+    fecha_de_nacimiento = models.DateField(verbose_name='Fecha de nacimiento')
+
+    class Meta:
+        ordering = ["user__email","fecha_de_nacimiento"]
+        verbose_name_plural = "Usuarios"
 
     def __str__(self):
         return self.user.email
@@ -145,9 +149,9 @@ class Trailer(models.Model):
     
 class Perfil(models.Model):
     usuario = models.ForeignKey('Usuario', on_delete=models.SET_NULL, null=True)
-    username = models.CharField(max_length=20)
-    historial = models.ManyToManyField('Libro')
-    selected = models.BooleanField(default=True)
+    username = models.CharField(max_length=20, verbose_name='Nombre de usuario')
+    historial = models.ManyToManyField('Libro', verbose_name='Historial')
+    selected = models.BooleanField(default=True, verbose_name='Perfil seleccionado')
 
     def __str__(self):
         return self.username

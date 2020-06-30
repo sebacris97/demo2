@@ -18,7 +18,8 @@
 <h3 align="center">Adelantos</h3>
 <div  class="container-fluid card pre-scrollable" style="overflow-y:auto;" align="center">
 	{% if trailers %}
-		{% for trailer in trailers %} <br>
+		<br>
+		{% for trailer in trailers %} 
 			<div class="card">
 				<div class="row">
 					<div class="col-12">
@@ -73,12 +74,7 @@
 <div class="col-12  col-sm-12">
 
 {% if user.is_authenticated %}
-	<h2 align="center">Área para miembros</h2>
-	
-	<p align="center">
-		Bienvenido <b>{{nombre_perfil}}</b>,
-		esta página es exclusiva para usuarios registrados.
-	</p>
+	<h2 align="center">	Bienvenido <b>{{nombre_perfil}}</b></h2>
 {% endif %}
 
 </div>      <!--fin fila-->

@@ -83,10 +83,12 @@ def index(request):
     trailers = Trailer.objects.filter(creacion__gte=d)
     novedades = Novedad.objects.filter(creacion__gte=d)
     if request.user.is_authenticated:
-        perfil = perfil_actual(request)
-        nombre_perfil = str(perfil) 
-        return render(request, "index.html", {"trailers":trailers,"novedades": novedades,"nombre_perfil":nombre_perfil})
-    return render(request, "index.html", {"trailers":trailers,"novedades": novedades})
+        if request.user.is_superuser:
+            nombre_perfil = 'admin'
+        else:
+            perfil = perfil_actual(request)
+            nombre_perfil = str(perfil) 
+    return render(request, "index.html", {"trailers":trailers,"novedades": novedades,"nombre_perfil":nombre_perfil})
 
 def register(request):
     # Creamos el formulario de autenticación vacío

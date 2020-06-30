@@ -5,7 +5,6 @@ from datetime import datetime as d
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 
-
 class FormularioAgregarLibro(forms.Form):
     titulo_campo = forms.CharField(required=True, label='Titulo')
     nropaginas_campo = forms.IntegerField(required=True, label='Numero De Paginas')
@@ -82,7 +81,6 @@ def LoginForm(AuthenticationForm):
         except User.DoesNotExist:
             raise ValidationError("El email ya esta registrado")
         return data
-
 
 
 class CreateProfileForm(forms.Form):

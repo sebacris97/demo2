@@ -2,13 +2,8 @@
 {% load static %}
 
 
-
-
 {% block content %}
 
-
-
-<link href='{% static "css/ver_libros.css" %}' rel="stylesheet" type="text/css"/>
 
   <!-- Fengyuan Chen's Datepicker -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
@@ -16,14 +11,44 @@
 
 
 
+<style>
+.check { border:2px solid #ccc; width:200px; height: 100px; overflow-y: auto; position: relative; margin: 0 auto;}
+li{
+    list-style:none; //you can remove !important
+
+        display:list-item;;
+        margin: 0 2px 0 0;
+        float: left;
+}
+
+.rrr{
+width:50%;position: relative; margin: 0 auto; width:100%; 
+}
+</style>
+
+
 <br>
 
+<div class="row-fluid">
+<div class="col-md-6 mx-auto card form-group">
+	<form class="rrr" style="text-align:center;">
+
+		<br>
+		<p><label for="id_titulo__icontains">Titulo: </label> {{filter.form.titulo__icontains}} </p>
+		<p><label for="id_autor">Autor: </label> {{filter.form.autor}} </p>
+		<p><label for="id_editorial">Editorial: </label> {{filter.form.editorial}} </p>
+		<p>{{filter.form.genero.label}}: <div class="check">{% for genero in filter.form.genero %}
+							{{genero}}<br> {% endfor %}</div> <br>
 
 
-	<form>
-		{{ filter.form.as_p }}
-		<button id="buscar-btn" type='submit'>Buscar</button>
+
+
+		<p><label for="id_agnoedicion">Año: </label> {{filter.form.agnoedicion}} </p>
+
+		<button id="buscar-btn" class="btn btn-primary" type='submit'>Buscar</button><br><br>
 	</form>
+</div> 
+</div>
 
 <br><br>
 
@@ -83,7 +108,7 @@
                 </div>
                 
             {% endfor %}
-            </div>
+</div>
 
 		
 	{% else %}
@@ -93,8 +118,9 @@
 
 
 
-
+<link href='{% static "css/ver_libros.css" %}' rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src='{% static "js/ver_libros.js" %}'></script>
+
 
   <script>
 
@@ -104,9 +130,12 @@
       autoHide: true });
     });
 
-  document.getElementById("id_agnoedicion").setAttribute("autocomplete", "off");
-  document.getElementById("id_agnoedicion").setAttribute("onkeydown","return false");
-  document.getElementById("id_agnoedicion").setAttribute("type","search");
+  a = document.getElementById("id_agnoedicion")
+  a.setAttribute("autocomplete", "off");
+  a.setAttribute("onkeydown","return false");
+  a.setAttribute("type","search");
+
+
 
   </script>
 
