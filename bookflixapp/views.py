@@ -12,6 +12,8 @@ from django.contrib.auth import login as do_login
 from .forms import RegistrationForm, LoginForm, CreateProfileForm
 from .filters import LibroFilter
 
+from django.contrib.auth.decorators import login_required
+
 # from .forms import FormularioAgregarLibro
 
 # Create your views here.
@@ -44,18 +46,19 @@ def perfil_actual(request):
     perfil=Perfil.objects.filter(usuario__user__email=str(usuario[0]), selected=True) #me quedo con el perfil seleccionado
     return perfil[0]
 
-
+@login_required(login_url='/login/')
 def ver_historial(request):
     perfil = perfil_actual(request)
     historial = perfil.historial.all()
     return render(request, "ver_historial.html", {'historial':historial})    
 
+@login_required(login_url='/login/')
 def ver_libros(request):
     filtro = LibroFilter(request.GET, queryset=Libro.objects.all())
     print(filtro)
     return render(request, "ver_libros.html", {"filter": filtro})
 
-
+@login_required(login_url='/login/')
 def ver_capitulos(request, pk):
     capitulos = Capitulo.objects.filter(libro__id=pk)
     if len(capitulos) > 0:  # parche temporal para los libros que no tienen capitulos
@@ -74,6 +77,7 @@ def ver_capitulos(request, pk):
         return render(request, "index.html")  # si no se le subio capitulo te manda a index
 
 
+@login_required(login_url='/login/')
 def post_search(request):
     
     return redirect('/verLibros/?titulo__icontains=' + request.POST['search'])
@@ -87,8 +91,9 @@ def index(request):
             nombre_perfil = 'admin'
         else:
             perfil = perfil_actual(request)
-            nombre_perfil = str(perfil) 
-    return render(request, "index.html", {"trailers":trailers,"novedades": novedades,"nombre_perfil":nombre_perfil})
+            nombre_perfil = str(perfil)
+        return render(request, "index.html", {"trailers":trailers,"novedades": novedades,"nombre_perfil":nombre_perfil})
+    return render(request, "index.html", {"trailers":trailers,"novedades": novedades})
 
 def register(request):
     # Creamos el formulario de autenticación vacío
