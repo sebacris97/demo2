@@ -11,8 +11,6 @@
 
 
 
-</style>
-
 
 <br>
 
@@ -32,7 +30,7 @@
 
 		<div class="row">
 		    <div class="col md-12">
-			<label for="id_autor">Autor: </label> {{filter.form.autor}}
+			<label for="id_autor">Autor:</label> {{filter.form.autor}}
 		    </div>
 		</div>
 
@@ -40,7 +38,7 @@
 
 		<div class="row">
 		    <div class="col md-12">
-			<label for="id_editorial">Editorial: </label> {{filter.form.editorial}}
+			<label for="id_editorial">Editorial:</label> {{filter.form.editorial}}
 		    </div>
 		</div>
 
@@ -48,7 +46,7 @@
 
 		<div class="row">
 		    <div class="col md-12">
-			<label for="id_genero">Genero: </label>{{filter.form.genero}}
+			<label for="id_genero">Genero:</label> {{filter.form.genero}}
 		    </div>
 		</div>
 
@@ -142,11 +140,11 @@
 
 
 <link href='{% static "css/ver_libros.css" %}' rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src='{% static "js/ver_libros.js" %}'></script>
+<script type="text/javascript" src="{% static 'js/select_picker.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/ver_libros.js' %}"></script>
 
 
-  <script>
-
+<script type="text/javascript">
 
 
   titulo = document.getElementById("id_titulo__icontains");
@@ -157,13 +155,12 @@
 
   agndoedicion = document.getElementById("id_agnoedicion")
   agndoedicion.setAttribute("type","date");
-  agndoedicion.setAttribute("max","3000-12-31")
+  agndoedicion.setAttribute("max","9999-12-31")
   agndoedicion.setAttribute("class","form-control")
 
 
-$('select').selectpicker();
+</script>
 
-  </script>
 
 
 
