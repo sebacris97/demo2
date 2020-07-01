@@ -128,7 +128,7 @@ def register(request):
     return render(request, "registration/register.html", {'form': form})
 
 
-def login(request):
+def login_view(request):
     # Creamos el formulario de autenticación vacío
     if request.method == "POST":
         # Recuperamos las credenciales validadas

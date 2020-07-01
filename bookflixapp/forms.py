@@ -44,7 +44,7 @@ class FormularioAgregarLibro(forms.Form):
 
 class RegistrationForm(UserCreationForm):
 
-    fecha_de_nacimiento = forms.DateField(required=True, input_formats=['%d/%m/%Y'])
+    fecha_de_nacimiento = forms.DateField(required=True)
     tarjeta = forms.CharField(required=True, max_length=16, min_length=16)
     class Meta:
         model = User
