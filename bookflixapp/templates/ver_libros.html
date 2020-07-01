@@ -5,25 +5,12 @@
 {% block content %}
 
 
-  <!-- Fengyuan Chen's Datepicker -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 
 
 
-<style>
-.check { border:2px solid #ccc; width:200px; height: 100px; overflow-y: auto; position: relative; margin: 0 auto;}
-li{
-    list-style:none; //you can remove !important
-
-        display:list-item;;
-        margin: 0 2px 0 0;
-        float: left;
-}
-
-.rrr{
-width:50%;position: relative; margin: 0 auto; width:100%; 
-}
 </style>
 
 
@@ -31,22 +18,58 @@ width:50%;position: relative; margin: 0 auto; width:100%;
 
 <div class="row-fluid">
 <div class="col-md-6 mx-auto card form-group">
-	<form class="rrr" style="text-align:center;">
+
+                <br>
+	<form>
+
+		<div class="row">
+		    <div class="col md-12">
+			<label for="id_titulo__icontains">Titulo: </label> {{filter.form.titulo__icontains}}
+		    </div>
+		</div>
 
 		<br>
-		<p><label for="id_titulo__icontains">Titulo: </label> {{filter.form.titulo__icontains}} </p>
-		<p><label for="id_autor">Autor: </label> {{filter.form.autor}} </p>
-		<p><label for="id_editorial">Editorial: </label> {{filter.form.editorial}} </p>
-		<p>{{filter.form.genero.label}}: <div class="check">{% for genero in filter.form.genero %}
-							{{genero}}<br> {% endfor %}</div> <br>
 
+		<div class="row">
+		    <div class="col md-12">
+			<label for="id_autor">Autor: </label> {{filter.form.autor}}
+		    </div>
+		</div>
 
+		<br>
 
+		<div class="row">
+		    <div class="col md-12">
+			<label for="id_editorial">Editorial: </label> {{filter.form.editorial}}
+		    </div>
+		</div>
 
-		<p><label for="id_agnoedicion">Año: </label> {{filter.form.agnoedicion}} </p>
+		<br>
 
-		<button id="buscar-btn" class="btn btn-primary" type='submit'>Buscar</button><br><br>
+		<div class="row">
+		    <div class="col md-12">
+			<label for="id_genero">Genero: </label>{{filter.form.genero}}
+		    </div>
+		</div>
+
+		<br>
+
+		<div class="row">
+		    <div class="col md-12">
+			<label for="id_agnoedicion">Año: </label> {{filter.form.agnoedicion}}
+		    </div>
+		</div>
+
+		<br>
+
+		<div class="row">
+		    <div class="col md-12">
+			<button id="buscar-btn" class="btn btn-primary" type='submit'>Buscar</button>
+		    </div>
+		</div>
+
 	</form>
+                <br>
 </div> 
 </div>
 
@@ -124,18 +147,21 @@ width:50%;position: relative; margin: 0 auto; width:100%;
 
   <script>
 
-    $(function () {
-      $("#id_agnoedicion").datepicker({
-      format:'dd/mm/yyyy',
-      autoHide: true });
-    });
-
-  a = document.getElementById("id_agnoedicion")
-  a.setAttribute("autocomplete", "off");
-  a.setAttribute("onkeydown","return false");
-  a.setAttribute("type","search");
 
 
+  titulo = document.getElementById("id_titulo__icontains");
+  titulo.setAttribute("type","text");
+  titulo.setAttribute("placeholder","Ingrese un titulo")
+  titulo.setAttribute("class","form-control")
+
+
+  agndoedicion = document.getElementById("id_agnoedicion")
+  agndoedicion.setAttribute("type","date");
+  agndoedicion.setAttribute("max","9999-12-31")
+  agndoedicion.setAttribute("class","form-control")
+
+
+$('select').selectpicker();
 
   </script>
 

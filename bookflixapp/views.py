@@ -46,19 +46,19 @@ def perfil_actual(request):
     perfil=Perfil.objects.filter(usuario__user__email=str(usuario[0]), selected=True) #me quedo con el perfil seleccionado
     return perfil[0]
 
-@login_required(login_url='/login/')
+@login_required
 def ver_historial(request):
     perfil = perfil_actual(request)
     historial = perfil.historial.all()
     return render(request, "ver_historial.html", {'historial':historial})    
 
-@login_required(login_url='/login/')
+@login_required
 def ver_libros(request):
     filtro = LibroFilter(request.GET, queryset=Libro.objects.all())
     print(filtro)
     return render(request, "ver_libros.html", {"filter": filtro})
 
-@login_required(login_url='/login/')
+@login_required
 def ver_capitulos(request, pk):
     capitulos = Capitulo.objects.filter(libro__id=pk)
     if len(capitulos) > 0:  # parche temporal para los libros que no tienen capitulos
@@ -77,7 +77,7 @@ def ver_capitulos(request, pk):
         return render(request, "index.html")  # si no se le subio capitulo te manda a index
 
 
-@login_required(login_url='/login/')
+@login_required
 def post_search(request):
     
     return redirect('/verLibros/?titulo__icontains=' + request.POST['search'])
@@ -156,6 +156,7 @@ def logout(request):
     return redirect('/')
 
 
+@login_required
 def createprofile(request):
     if request.method == "POST":
         form = CreateProfileForm(data=request.POST)
@@ -176,32 +177,13 @@ def createprofile(request):
         return render(request, "crear_perfil.html", {'form': form})
 
 
+@login_required
 def verperfil(request):
-    if request.method == "GET":
-        user = request.user
-        anon = User(AnonymousUser)
-        if user.username != "":
-            usuario = Usuario.objects.filter(user=user)
-            perfil = Perfil.objects.filter(usuario=usuario[0], selected=True)
-            return render(request, 'perfil.html', {"perfil": perfil[0]})
-        else:
-            return render(request, 'perfil.html')
-    else:
-        if request.method == "POST":
-            name = request.POST["nombre"]
-            user = request.user
-            usuario = Usuario.objects.get(user=user)
-            perfil_sel = Perfil.objects.filter(selected=True, usuario=usuario)
-            perfil = Perfil.objects.filter(username=name, usuario=usuario)
-            p = perfil_sel[0]
-            p.selected = False
-            p.save()
-            p2 = perfil[0]
-            p2.selected = True
-            p2.save()
-            return render(request, 'perfil.html', {"perfil": perfil[0]})
+    perfil = str(perfil_actual(request))
+    return render(request, 'perfil.html', {"perfil": perfil})
 
 
+@login_required
 def selecperfil(request):
     if request.method == "GET":
         user = request.user

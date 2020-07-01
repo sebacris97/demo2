@@ -15,7 +15,7 @@ class LibroFilter(django_filters.FilterSet):
             models.ManyToManyField: {
                 'filter_class': django_filters.ModelMultipleChoiceFilter,
                 'extra': lambda f: {
-                    'widget': forms.CheckboxSelectMultiple,
+                    'widget': forms.SelectMultiple,
                     'queryset': Genero.objects.all()
                 }
             }

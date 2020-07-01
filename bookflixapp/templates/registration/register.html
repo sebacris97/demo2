@@ -14,10 +14,8 @@ input[type="search"]{
 </style>
 
 
-  <!-- Fengyuan Chen's Datepicker -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
-
+<div class="row">
+<div class="col-md-12">
 
 <br>
 
@@ -25,33 +23,56 @@ input[type="search"]{
 
 <br>
 
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Registrar</button>
-</form>
+<div class="form-group well well-sm">
+  <form method="POST">
+     {% csrf_token %}
+     {{ form.as_p }}
+     <br>
+     <button class="btn btn-primary" type="submit">Registrar</button>
+  </form>
+</div>
 
-
+</div>
+</div>
 
 
 
   <script>
-    $(function () {
-      $("#id_fecha_de_nacimiento").datepicker({
-      format:'dd/mm/yyyy',
-      autoHide: true
-    });
-    });
 
-  document.getElementById("id_fecha_de_nacimiento").setAttribute("autocomplete", "off");
-  document.getElementById("id_fecha_de_nacimiento").setAttribute("onkeydown","return false");
-  document.getElementById("id_fecha_de_nacimiento").setAttribute("type","search");
+  first_name = document.getElementById("id_first_name");
+  first_name.setAttribute("class","form-control");
+  first_name.setAttribute("placeholder","Ingrese su nombre");
 
-$('input[name="id_fecha_de_nacimiento"]').datepicker({ autoClose: true});
+  last_name = document.getElementById("id_last_name");
+  last_name.setAttribute("class","form-control");
+  last_name.setAttribute("placeholder","Ingrese su apellido");
 
-  </script>
+  email = document.getElementById("id_email");
+  email.setAttribute("class","form-control");
+  email.setAttribute("placeholder","Ingrese su email");
+
+  password1 = document.getElementById("id_password1");
+  password1.setAttribute("class","form-control");
+  password1.setAttribute("placeholder","Ingrese su contraseña");
+
+  password2 = document.getElementById("id_password2");
+  password2.setAttribute("class","form-control");
+  password2.setAttribute("placeholder","Ingrese nuevamente su contraseña");
+
+  fecha_de_nacimiento = document.getElementById("id_fecha_de_nacimiento");
+  fecha_de_nacimiento.setAttribute("type","date");
+  fecha_de_nacimiento.setAttribute("max","9999-12-31");
+  fecha_de_nacimiento.setAttribute("class","form-control");
+
+  tarjeta = document.getElementById("id_tarjeta");
+  tarjeta.setAttribute("type","number");
+  tarjeta.setAttribute("class","form-control");
+  tarjeta.setAttribute("placeholder","Ingrese el numero de su tarjeta de credito");
 
 
+</script>
+
+ 
 
 <br>
 

@@ -1,18 +1,10 @@
-{% if user.is_authenticated %}
-    {% include 'base.html' %}
-{% else %}
-    {% include 'base_login.html' %}
-{% endif %}
+{% include 'base.html' %}
+
 
 {% block content %}
-    {% if user.is_authenticated %}
-    <div style="text-align:center;">
-        <h3>Perfil Seleccionado: <b>{{perfil.username}}</b></h3>
-        <span id="timer">
-            <script src="static/js/gracias.js"></script>
-        </span>
-    </div>
-    {% else %}
-        <h3 align="center">Debe iniciar sesion para ver su perfil.</h3>
-    {% endif %}
+
+<br><br>
+  
+        <h3 style="text-align:center;">Perfil Seleccionado: <b>{{perfil}}</b></h3>
+        
 {% endblock %}
