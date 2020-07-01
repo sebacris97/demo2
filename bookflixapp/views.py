@@ -14,32 +14,9 @@ from .filters import LibroFilter
 
 from django.contrib.auth.decorators import login_required
 
-# from .forms import FormularioAgregarLibro
 
 # Create your views here.
 
-
-"""
-def agregar_libro(request):
-    if request.method == 'POST':
-        formularioLibro = FormularioAgregarLibro(request.POST)
-        if formularioLibro.is_valid():
-            titulo_libro = formularioLibro.cleaned_data['titulo_campo']
-            nropaginas_libro = formularioLibro.cleaned_data['nropaginas_campo']
-            nrocapitulos_libro = formularioLibro.cleaned_data['nrocapitulos_campo']
-            isbn_libro = formularioLibro.cleaned_data['isbn_campo']
-            autor_libro = formularioLibro.cleaned_data['autor_campo']
-            editorial_libro = formularioLibro.cleaned_data['editorial_campo']
-            genero_libro = formularioLibro.cleaned_data['genero_campo']
-            agnoedicion_libro = formularioLibro.cleaned_data['agnoedicion_campo']
-            nuevo_libro = Libro(titulo=titulo_libro, nropaginas=nropaginas_libro, nrocapitulos=nrocapitulos_libro, isbn=isbn_libro, autor=autor_libro, editorial=editorial_libro, agnoedicion=agnoedicion_libro)
-            nuevo_libro.save()
-            nuevo_libro.genero.add(*genero_libro)
-            return render(request, "agregar_libro.html", {'formularioLibro': formularioLibro})
-    else:
-        formularioLibro = FormularioAgregarLibro()
-    return render(request, "agregar_libro.html", {'formularioLibro': formularioLibro})
-"""
 
 def perfil_actual(request):
     usuario=Usuario.objects.filter(user__email=str(request.user))  #me quedo con el usuario logueado
@@ -74,7 +51,7 @@ def ver_capitulos(request, pk):
 
         return render(request, "ver_capitulos.html", {"capitulos": capitulos, "titulo": titulo})
     else:
-        return render(request, "index.html")  # si no se le subio capitulo te manda a index
+        return redirect('/')  # si no se le subio capitulo te manda a index
 
 
 @login_required

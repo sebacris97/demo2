@@ -1,10 +1,4 @@
 
-input[type="search"]{
-    appearance: textfield;
-    -moz-appearance: textfield;
-    -webkit-appearance: textfield;
-
-}
 
 .fa {
 	margin-right: 5px;
