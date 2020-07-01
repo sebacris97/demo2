@@ -38,11 +38,8 @@ urlpatterns = [
                   # la clave primaria del libro desde el template que se lo llama (desde verLibros)
 
                 path('register/', views.register, name='register'),
-                path('login/', views.login_view, name='login'),
+                path('login/', views.login, name='login'),
                 path('logout/', views.logout, name='logout'),
 
-                  # path('accounts/', include('django.contrib.auth.urls')),
-
-                  # path('agregarLibro/',views.agregar_libro),
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
