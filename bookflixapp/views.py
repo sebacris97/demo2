@@ -29,11 +29,16 @@ def ver_historial(request):
     historial = perfil.historial.all()
     return render(request, "ver_historial.html", {'historial':historial})    
 
+def high_to_low(modelo,campo):
+    return modelo.objects.all().order_by('-'+str(campo))
+
+def low_to_high(modelo,campo):
+    return modelo.objects.all().order_by(campo)
+
 @login_required
 def ver_libros(request):
-    filtro = LibroFilter(request.GET, queryset=Libro.objects.all())
-    high_to_low = Libro.objects.all().order_by('-contador')
-    low_to_high = Libro.objects.all().order_by('contador')
+    qs = high_to_low(Libro,'contador')
+    filtro = LibroFilter(request.GET, queryset=qs)
     return render(request, "ver_libros.html", {"filter": filtro})
 
 
