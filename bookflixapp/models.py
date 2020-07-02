@@ -91,7 +91,7 @@ class Libro(models.Model):
 
     class Meta:
         verbose_name_plural = "Libros"
-        ordering = ["titulo"]
+        ordering = ["-contador","titulo"]
 
     def get_imagen(self):
         return self.trailer.get_imagen()

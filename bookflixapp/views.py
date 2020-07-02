@@ -32,8 +32,11 @@ def ver_historial(request):
 @login_required
 def ver_libros(request):
     filtro = LibroFilter(request.GET, queryset=Libro.objects.all())
-    print(filtro)
+    high_to_low = Libro.objects.all().order_by('-contador')
+    low_to_high = Libro.objects.all().order_by('contador')
     return render(request, "ver_libros.html", {"filter": filtro})
+
+
 
 
 def action(request,pk_libro,pk_capitulo):
@@ -177,3 +180,6 @@ def selecperfil(request):
         return render(request, 'selec_perfil.html', {"perfiles": perfiles})
     if request.method == "POST":
         return render(request, 'perfil.html')
+
+
+
