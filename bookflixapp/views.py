@@ -4,12 +4,11 @@ from datetime import timedelta
 from django.utils import timezone
 from django.http import request as rq
 
-from django.contrib.auth import logout as do_logout
-from django.contrib.auth import authenticate
 from django.contrib.auth.models import User, AnonymousUser
-from django.contrib.auth import hashers
+from django.contrib.auth import hashers, authenticate
 from django.contrib.auth import login as do_login
-from .forms import RegistrationForm, LoginForm, CreateProfileForm
+from .forms import RegistrationForm, CreateProfileForm
+from .forms import CustomAuthenticationForm as AuthenticationForm
 from .filters import LibroFilter
 
 from django.contrib.auth.decorators import login_required
@@ -106,31 +105,31 @@ def register(request):
 
 
 def login(request):
-    # Creamos el formulario de autenticación vacío
+    # Creamos el formulario de autenticación
+    form = AuthenticationForm(data=request.POST or None)
     if request.method == "POST":
-        # Recuperamos las credenciales validadas
-        username = request.POST["email"]
-        password = request.POST["pass"]
-        # Verificamos las credenciales del usuario
-        user = authenticate(username=username, password=password)
-        # Si existe un usuario con ese nombre y contraseña
-        if user is not None:
-            # Hacemos el login manualmente
-            do_login(request, user)
-            if user.is_superuser:
-                return redirect("/admin")  # or your url name
-                # Y le redireccionamos a la portada
-            else:
-                return redirect("/")
+        # Si el formulario es válido...
+        if form.is_valid():
+            # Recuperamos las credenciales validadas
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            # Verificamos las credenciales del usuario
+            user = authenticate(username=username, password=password)
+            # Si existe un usuario con ese nombre y contraseña
+            if user is not None:
+                # Hacemos el login manualmente
+                do_login(request, user)
+
+                # Si el usuario es administrador
+                if request.user.is_superuser:
+                    # Lo redireccionamos a la pagina del admin
+                    return redirect('/admin')
+                else:
+                    # Y sino le redireccionamos a la portada
+                    return redirect('/')
     # Si llegamos al final renderizamos el formulario
-    return render(request, "registration/login.html")
+    return render(request, "registration/login.html", {'form': form})
 
-
-def logout(request):
-    # Finalizamos la sesión
-    do_logout(request)
-    # Redireccionamos a la portada
-    return redirect('/')
 
 
 @login_required
