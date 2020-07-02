@@ -65,6 +65,8 @@ class Capitulo(models.Model):
                            validators=[FileExtensionValidator(['pdf'], 'Solo se permiten archivos pdf')])
 
 
+
+
 class Libro(models.Model):
     titulo = models.CharField(max_length=200)
     nropaginas = models.PositiveIntegerField(validators=[MinValueValidator(1)], verbose_name="Numero de paginas")
@@ -78,11 +80,14 @@ class Libro(models.Model):
 
     trailer = models.ForeignKey('Trailer',on_delete=models.CASCADE)
 
+    contador = models.PositiveIntegerField(default=0, editable=False, verbose_name='Veces leido')
+
     def get_trailer(self):
         return self.trailer.get_texto()
 
     def __str__(self):
         return self.titulo
+
 
     class Meta:
         verbose_name_plural = "Libros"

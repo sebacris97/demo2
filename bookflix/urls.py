@@ -23,13 +23,14 @@ from django.conf.urls.static import static
 
 from django.contrib.auth.views import LogoutView
 
+
 urlpatterns = [
 
                 path('admin/', admin.site.urls, name='admin'),
                 path('', views.index, name='index'),
 
-
                 url(r'^post-search/$', views.post_search, name='post-search'),
+
                 path('perfil/', views.verperfil, name='verperfil'),
                 path('selecPerfil/', views.selecperfil, name='seleccionarPerfil'),
                 path('crearPerfil/', views.createprofile, name='crearPerfil'),
@@ -39,6 +40,7 @@ urlpatterns = [
                   # <int:pk> significa que ver capitulos recibe de parametro la en pk
                   # la clave primaria del libro desde el template que se lo llama (desde verLibros)
 
+                path('action/<int:pk_libro>/<int:pk_capitulo>', views.action, name='action'), 
                 path('register/', views.register, name='register'),
                 path('login/', views.login, name='login'),
                 

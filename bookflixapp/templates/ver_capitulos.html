@@ -16,7 +16,7 @@
 	{% for capitulo in capitulos %}
 
 	<tr>
-		<td><a href="{{capitulo.pdf.url}}">Capitulo {{capitulo.numero}}</a></td>
+		<td><a href="/action/{{capitulo.libro.id}}/{{capitulo.id}}">Capitulo {{capitulo.numero}}</a></td>
 		<td>{{capitulo.nropaginas}}</td>
 	</tr>
 
@@ -27,4 +27,3 @@
 
 
 {% endblock %}
-

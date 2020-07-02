@@ -12,6 +12,7 @@ from .forms import CustomAuthenticationForm as AuthenticationForm
 from .filters import LibroFilter
 
 from django.contrib.auth.decorators import login_required
+from django.db.models import F
 
 
 # Create your views here.
@@ -34,6 +35,13 @@ def ver_libros(request):
     print(filtro)
     return render(request, "ver_libros.html", {"filter": filtro})
 
+
+def action(request,pk_libro,pk_capitulo):
+    libro = Libro.objects.filter(id=pk_libro)
+    libro.update(contador=F('contador') + 1)
+    capitulo = Capitulo.objects.filter(id=pk_capitulo)[0]
+    return redirect(capitulo.pdf.url)
+
 @login_required
 def ver_capitulos(request, pk):
     capitulos = Capitulo.objects.filter(libro__id=pk)
@@ -43,6 +51,8 @@ def ver_capitulos(request, pk):
         perfil = perfil_actual(request)
         libro = Libro.objects.filter(id=pk) #me quedo con el libro clickeado
         perfil.historial.add(*libro) #lo agrgo a la lista de libros leidos
+
+        #libro.update(contador=F('contador') + 1)
 
         # el parametro lo recibe de urls. lo que hago es filtrar los capitulos
         # que pertenecen al libro que recibo como parametro
@@ -55,7 +65,6 @@ def ver_capitulos(request, pk):
 
 @login_required
 def post_search(request):
-    
     return redirect('/verLibros/?titulo__icontains=' + request.POST['search'])
 
 def index(request):
