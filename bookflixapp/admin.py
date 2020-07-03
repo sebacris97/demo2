@@ -84,7 +84,7 @@ class LibroAdmin(admin.ModelAdmin):
     list_display = ('titulo', 'nropaginas', 'nrocapitulos', 'isbn', 'autor', 'editorial', 'get_genero', 'agnoedicion', 'contador', 'subido')
     search_fields = ('titulo', 'autor__nombre', 'autor__apellido', 'editorial__nombre', 'genero__nombre',)
     list_filter = (('subido', DateTimeRangeFilter),'subido',('agnoedicion', DateRangeFilter),('genero',RelatedDropdownFilter),)
-    inlines = [CapituloInline]  # se registra en liro la clase creada anteriormente
+    inlines = [CapituloInline]  # se registra en libro la clase creada anteriormente
 
 
 @admin.register(Trailer)
