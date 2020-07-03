@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 	'bookflixapp',
         'django_cleanup',
         'rangefilter',
+        'django_admin_listfilter_dropdown',
 ]
 
 MIDDLEWARE = [

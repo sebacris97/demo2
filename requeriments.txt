@@ -1,0 +1,3 @@
+pip install django-admin-list-filter-dropdown
+pip install django-cleanup
+pip install django-admin-rangefilter

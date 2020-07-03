@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import Usuario, Perfil, Libro, Genero, Autor, Editorial, Novedad, Capitulo, Trailer
 from rangefilter.filter import DateRangeFilter, DateTimeRangeFilter
+from django_admin_listfilter_dropdown.filters import DropdownFilter, ChoiceDropdownFilter, RelatedDropdownFilter
 
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
@@ -42,7 +43,7 @@ class CustomUserAdmin(UserAdmin):
     inlines = (ProfileInline, )
     UserAdmin.list_display += ('date_joined','get_nacimiento',)
     list_select_related = ('usuario', )
-    list_filter = (('date_joined', DateTimeRangeFilter),'date_joined',)+ UserAdmin.list_filter[0:3] #(NacimientoFilter,)
+    list_filter = (('date_joined', DateRangeFilter),'date_joined',)+ UserAdmin.list_filter[0:3] #(NacimientoFilter,)
 
     def __init__(self, *args, **kwargs):
         super(UserAdmin,self).__init__(*args, **kwargs)
@@ -86,9 +87,9 @@ class LibroAdmin(admin.ModelAdmin):
     get_genero.short_description = 'genero'  # Renames column head
 
     filter_horizontal = ('genero',)
-    list_display = ('titulo', 'nropaginas', 'nrocapitulos', 'isbn', 'autor', 'editorial', 'get_genero', 'agnoedicion', 'contador',)
+    list_display = ('titulo', 'nropaginas', 'nrocapitulos', 'isbn', 'autor', 'editorial', 'get_genero', 'agnoedicion', 'contador', 'subido')
     search_fields = ('titulo', 'autor__nombre', 'autor__apellido', 'editorial__nombre', 'genero__nombre',)
-    list_filter = ('autor', 'editorial', ('agnoedicion', DateRangeFilter), 'genero',)
+    list_filter = (('subido', DateTimeRangeFilter),'subido',('agnoedicion', DateRangeFilter),('genero',RelatedDropdownFilter),)
     inlines = [CapituloInline]  # se registra en liro la clase creada anteriormente
 
 

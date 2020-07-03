@@ -82,6 +82,8 @@ class Libro(models.Model):
 
     contador = models.PositiveIntegerField(default=0, editable=False, verbose_name='Veces leido')
 
+    subido = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de carga")
+
     def get_trailer(self):
         return self.trailer.get_texto()
 
@@ -91,7 +93,7 @@ class Libro(models.Model):
 
     class Meta:
         verbose_name_plural = "Libros"
-        ordering = ["-contador","titulo"]
+        ordering = ["-subido","contador","titulo","isbn"]
 
     def get_imagen(self):
         return self.trailer.get_imagen()
