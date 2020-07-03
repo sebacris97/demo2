@@ -43,7 +43,7 @@ class CustomUserAdmin(UserAdmin):
     inlines = (ProfileInline, )
     UserAdmin.list_display += ('date_joined','get_nacimiento',)
     list_select_related = ('usuario', )
-    list_filter = (('date_joined', DateRangeFilter),'date_joined',)+ UserAdmin.list_filter[0:3] #(NacimientoFilter,)
+    list_filter = (('date_joined', DateRangeFilter),'date_joined',)+ UserAdmin.list_filter[0:3]
 
     def __init__(self, *args, **kwargs):
         super(UserAdmin,self).__init__(*args, **kwargs)
@@ -55,11 +55,6 @@ class CustomUserAdmin(UserAdmin):
         if not obj:
             return list()
         return super(CustomUserAdmin, self).get_inline_instances(request, obj)
-
-#    def sort_nacimiento(self, instance):
-#        instance.usuario.fecha_de_nacimiento.admin_order_field = 'fecha_de_nacimiento'  # Allows column order sorting
-#        instance.usuario.fecha_de_nacimiento.short_description = 'Fecha de nacimiento'  # Renames column head
-
 
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
@@ -81,9 +76,8 @@ class CapituloInline(admin.TabularInline):
 class LibroAdmin(admin.ModelAdmin):
 
     def get_genero(self, obj):
-        return ", ".join([p.nombre for p in obj.genero.all()])
+        return "\n".join([p.nombre for p in obj.genero.all()])
 
-    get_genero.admin_order_field = 'genero'  # Allows column order sorting
     get_genero.short_description = 'genero'  # Renames column head
 
     filter_horizontal = ('genero',)

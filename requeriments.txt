@@ -1,3 +1,17 @@
 pip install django-admin-list-filter-dropdown
 pip install django-cleanup
 pip install django-admin-rangefilter
+pip install django-filter
+
+
+INSTALLED_APPS SHOULD BE:
+
+//settings.py
+
+INSTALLED_APPS = [ ...
+		   'bookflixapp'
+        		   'django_filters',
+		   'django_cleanup',
+		   'rangefilter',
+		   'django_admin_listfilter_dropdown',
+		 ]
