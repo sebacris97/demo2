@@ -3,3 +3,4 @@ bookflixapp/__pycache__/
 bookflix/__pycache__/
 media/libros/*
 media/trailers/*
+bookflix/settings.py
