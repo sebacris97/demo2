@@ -70,8 +70,9 @@ def ver_capitulos(request, pk):
         perfil = perfil_actual(request)
         libro = Libro.objects.filter(id=pk)  # me quedo con el libro clickeado
         perfil.historial.add(*libro)  # lo agrgo a la lista de libros leidos
+        libroobjeto = get_object_or_404(Libro, id=pk)
         is_favorito = False
-        if libro.usuariosfavorito.filter(id=perfil_actual.id).exist():
+        if libroobjeto.usuariosfavorito.filter(id=perfil_actual.id).exist():
             is_favorito = True
         # libro.update(contador=F('contador') + 1)
 
