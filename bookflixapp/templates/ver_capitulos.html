@@ -5,7 +5,13 @@
 <br>
 
 <h2>{{titulo}}</h2>
-
+<div id="favorito">
+	{% if is_favorito %}
+	<a href="agregarFavorito/{{capitulo.libro.id}}">
+		<i class="fas fa-star"></i>
+	{% else %}
+	<a href="agregarFavorito/{{capitulo.libro.id}}">
+		<i class="far fa-star"></i>
 <table  class="table">
 
 	<tr>

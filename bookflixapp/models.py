@@ -65,6 +65,32 @@ class Capitulo(models.Model):
                            validators=[FileExtensionValidator(['pdf'], 'Solo se permiten archivos pdf')])
 
 
+class Usuario(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, default='')
+    tarjeta = models.CharField(max_length=16, validators=[
+        RegexValidator('^(\d{16})$',
+                       'Debe introducir un numero de 16 digitos')], verbose_name="Tarjeta de credito")
+    fecha_de_nacimiento = models.DateField(verbose_name='Fecha de nacimiento')
+
+    class Meta:
+        ordering = ["user__email", "fecha_de_nacimiento"]
+        verbose_name_plural = "Usuarios"
+
+    def __str__(self):
+        return self.user.email
+
+
+class Perfil(models.Model):
+    usuario = models.ForeignKey('Usuario', on_delete=models.SET_NULL, null=True)
+    username = models.CharField(max_length=20, verbose_name='Nombre de usuario')
+    historial = models.ManyToManyField('Libro', verbose_name='Historial')
+    selected = models.BooleanField(default=True, verbose_name='Perfil seleccionado')
+
+    def __str__(self):
+        return self.username
+
+    class Meta:
+        verbose_name_plural = "Perfiles"
 
 
 class Libro(models.Model):
@@ -77,8 +103,9 @@ class Libro(models.Model):
     editorial = models.ForeignKey(Editorial, on_delete=models.CASCADE)
     genero = models.ManyToManyField(Genero)
     agnoedicion = models.DateField(verbose_name="Año de edicion")
+    usuariosfavoritos = models.ManyToManyField(Perfil, blank=True)
 
-    trailer = models.ForeignKey('Trailer',on_delete=models.CASCADE)
+    trailer = models.ForeignKey('Trailer', on_delete=models.CASCADE)
 
     contador = models.PositiveIntegerField(default=0, editable=False, verbose_name='Veces leido')
 
@@ -90,10 +117,9 @@ class Libro(models.Model):
     def __str__(self):
         return self.titulo
 
-
     class Meta:
         verbose_name_plural = "Libros"
-        ordering = ["-subido","contador","titulo","isbn"]
+        ordering = ["-subido", "contador", "titulo", "isbn"]
 
     def get_imagen(self):
         return self.trailer.get_imagen()
@@ -113,31 +139,15 @@ class Novedad(models.Model):
         ordering = ["-creacion"]
 
 
-
-
-class Usuario(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, default='')
-    tarjeta = models.CharField(max_length=16, validators=[
-        RegexValidator('^(\d{16})$',
-                       'Debe introducir un numero de 16 digitos')], verbose_name="Tarjeta de credito")
-    fecha_de_nacimiento = models.DateField(verbose_name='Fecha de nacimiento')
-
-    class Meta:
-        ordering = ["user__email","fecha_de_nacimiento"]
-        verbose_name_plural = "Usuarios"
-
-    def __str__(self):
-        return self.user.email
-
 class Trailer(models.Model):
 
     def content_file_name(instance, filename):
         nombre = filename
-        return '/'.join(['trailers', instance.titulo, nombre]) 
+        return '/'.join(['trailers', instance.titulo, nombre])
 
-    titulo = models.CharField(max_length=200,default='NONE',verbose_name="Titulo")
-    imagen = models.ImageField(null=True, upload_to=content_file_name, default='default.jpg',verbose_name="Imagen")
-    texto = models.TextField(max_length=500,default='NONE', verbose_name="Texto")
+    titulo = models.CharField(max_length=200, default='NONE', verbose_name="Titulo")
+    imagen = models.ImageField(null=True, upload_to=content_file_name, default='default.jpg', verbose_name="Imagen")
+    texto = models.TextField(max_length=500, default='NONE', verbose_name="Texto")
     creacion = models.DateTimeField(auto_now_add=True, verbose_name="Creacion")
 
     def __str__(self):
@@ -152,16 +162,3 @@ class Trailer(models.Model):
 
     def get_imagen(self):
         return self.imagen.url
-        
-    
-class Perfil(models.Model):
-    usuario = models.ForeignKey('Usuario', on_delete=models.SET_NULL, null=True)
-    username = models.CharField(max_length=20, verbose_name='Nombre de usuario')
-    historial = models.ManyToManyField('Libro', verbose_name='Historial')
-    selected = models.BooleanField(default=True, verbose_name='Perfil seleccionado')
-
-    def __str__(self):
-        return self.username
-
-    class Meta:
-        verbose_name_plural = "Perfiles"

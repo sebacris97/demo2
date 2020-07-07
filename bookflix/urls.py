@@ -37,6 +37,7 @@ urlpatterns = [
                 path('verLibros/', views.ver_libros, name='verLibros'),
                 path('verHistorial/', views.ver_historial, name='verHistorial'),
                 path('verCapitulos/<int:pk>', views.ver_capitulos, name='verCapitulos'),
+                path('agregarFavorito/<int:pk_libro>', views.agregarFavorito, name='agregarFavorito'),
                   # <int:pk> significa que ver capitulos recibe de parametro la en pk
                   # la clave primaria del libro desde el template que se lo llama (desde verLibros)
 
