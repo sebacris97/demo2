@@ -23,17 +23,6 @@ def perfil_actual(request):
     perfil=Perfil.objects.filter(usuario__user__email=str(usuario[0]), selected=True) #me quedo con el perfil seleccionado
     return perfil[0]
 
-@login_required
-def ver_historial(request):
-    perfil = perfil_actual(request)
-    historial = perfil.historial.all()
-    return render(request, "ver_historial.html", {'historial':historial})
-
-def ver_favoritos(request):
-    perfil = perfil_actual(request)
-    favoritos = perfil.favoritos.all()
-    return render(request, "ver_favoritos.html", {'favoritos':favoritos})
-
 def high_to_low(modelo,campo):
     return modelo.objects.all().order_by('-'+str(campo))
 
@@ -47,10 +36,10 @@ def agregar_favoritos(id_libro,perfil):
 def eliminar_favoritos(id_libro,perfil):
     libro = Libro.objects.filter(id=id_libro)
     perfil.favoritos.remove(*libro)
+
         
 @login_required
-def ver_libros(request):
-    qs = high_to_low(Libro,'contador')
+def ver_libros(request,choice=''):
     perfil = perfil_actual(request)
     favoritos = list(perfil.favoritos.values_list('id', flat=True))
     if request.method == 'POST':
@@ -63,7 +52,23 @@ def ver_libros(request):
             eliminar_favoritos(id_libro,perfil)
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         #para redirigir a la misma url donde estaba
-    filtro = LibroFilter(request.GET, queryset=qs)
+    
+    #favoritos, historial y ver libros son lo mismo, solo cambia el
+    #queryset que se muestra (por eso directamente resumi todo en un
+    #parametro que determina el queryset elegido)
+    
+    if choice == 'favoritos':
+        qs = perfil.favoritos
+    elif choice == 'historial':
+        qs = perfil.historial
+    else:
+        qs = Libro.objects.all()
+        
+    filtro = LibroFilter(request.GET, queryset=qs.order_by('-contador'))
+    #como por defecto la opcion elegida es "Mas leido primero"
+    #hice que sea cual sea el queryset renderizado, se pase ordenado
+    #de mas a menos leido
+
     return render(request, "ver_libros.html", {"filter": filtro,
                                                "favoritos": favoritos})
 
@@ -74,6 +79,8 @@ def action(request,pk_libro,pk_capitulo):
     libro = Libro.objects.filter(id=pk_libro)
     libro.update(contador=F('contador') + 1)
     capitulo = Capitulo.objects.filter(id=pk_capitulo)[0]
+    perfil = perfil_actual(request)
+    perfil.historial.add(*libro) #lo agrgo a la lista de libros leidos
     return redirect(capitulo.pdf.url)
 
 @login_required
@@ -81,12 +88,6 @@ def ver_capitulos(request, pk):
     capitulos = Capitulo.objects.filter(libro__id=pk)
     if len(capitulos) > 0:  # parche temporal para los libros que no tienen capitulos
         titulo = capitulos[0].libro
-        
-        perfil = perfil_actual(request)
-        libro = Libro.objects.filter(id=pk) #me quedo con el libro clickeado
-        perfil.historial.add(*libro) #lo agrgo a la lista de libros leidos
-
-        #libro.update(contador=F('contador') + 1)
 
         # el parametro lo recibe de urls. lo que hago es filtrar los capitulos
         # que pertenecen al libro que recibo como parametro
@@ -198,7 +199,8 @@ def createprofile(request):
 
 @login_required
 def verperfil(request):
-    perfil = str(perfil_actual(request))
+    perfil = perfil_actual(request)
+    print(str(perfil))
     return render(request, 'perfil.html', {"perfil": perfil})
 
 
