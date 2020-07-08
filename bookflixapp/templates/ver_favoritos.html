@@ -4,7 +4,7 @@
 {% block content %}
 
 
-{% if  historial %}
+{% if  favoritos %}
 
 <link href='{% static "css/ver_libros.css" %}' rel="stylesheet" type="text/css"/>
 
@@ -30,7 +30,7 @@
 
 <div id="products" class="row view-group">
 
-                {% for libro in historial %}
+                {% for libro in favoritos %}
                 <div class="item col-xs-4 col-lg-4">
                     <div class="thumbnail card" style="width:100%">
                         <div class="img-event"> 
@@ -60,7 +60,6 @@
                                     <a class="btn btn-success" href="#">FAVORITOS</a>
                                 </div>
                             </div> -->
-
                         </div>
                     </div>
                 </div>

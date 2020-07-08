@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from bookflixapp.models import Trailer, Libro, Novedad, Capitulo, Perfil, Usuario
 from datetime import timedelta
 from django.utils import timezone
-from django.http import request as rq
+from django.http import HttpResponseRedirect
 
 from django.contrib.auth.models import User, AnonymousUser
 from django.contrib.auth import hashers, authenticate
@@ -27,7 +27,12 @@ def perfil_actual(request):
 def ver_historial(request):
     perfil = perfil_actual(request)
     historial = perfil.historial.all()
-    return render(request, "ver_historial.html", {'historial':historial})    
+    return render(request, "ver_historial.html", {'historial':historial})
+
+def ver_favoritos(request):
+    perfil = perfil_actual(request)
+    favoritos = perfil.favoritos.all()
+    return render(request, "ver_favoritos.html", {'favoritos':favoritos})
 
 def high_to_low(modelo,campo):
     return modelo.objects.all().order_by('-'+str(campo))
@@ -35,11 +40,32 @@ def high_to_low(modelo,campo):
 def low_to_high(modelo,campo):
     return modelo.objects.all().order_by(campo)
 
+def agregar_favoritos(id_libro,perfil):
+    libro = Libro.objects.filter(id=id_libro)
+    perfil.favoritos.add(*libro)
+
+def eliminar_favoritos(id_libro,perfil):
+    libro = Libro.objects.filter(id=id_libro)
+    perfil.favoritos.remove(*libro)
+        
 @login_required
 def ver_libros(request):
     qs = high_to_low(Libro,'contador')
+    perfil = perfil_actual(request)
+    favoritos = list(perfil.favoritos.values_list('id', flat=True))
+    if request.method == 'POST':
+        id_libro = int(  list(request.POST.keys())[1]  )
+        #request.POST es un diccionario (dict_object) que en [0] tiene el csrf_token
+        #y en 1 el string del ID del libro que clickie (por eso hago el casteo a int)
+        if id_libro not in favoritos:
+            agregar_favoritos(id_libro,perfil)
+        else:
+            eliminar_favoritos(id_libro,perfil)
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        #para redirigir a la misma url donde estaba
     filtro = LibroFilter(request.GET, queryset=qs)
-    return render(request, "ver_libros.html", {"filter": filtro})
+    return render(request, "ver_libros.html", {"filter": filtro,
+                                               "favoritos": favoritos})
 
 
 
