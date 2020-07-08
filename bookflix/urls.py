@@ -35,7 +35,7 @@ urlpatterns = [
                 path('selecPerfil/', views.selecperfil, name='seleccionarPerfil'),
                 path('crearPerfil/', views.createprofile, name='crearPerfil'),
                 path('verLibros/', views.ver_libros, name='verLibros'),
-                path('verHistorial/', views.ver_historial, name='verHistorial'),
+                path('verLibros/<str:choice>', views.ver_libros, name='verLibros'),
                 path('verCapitulos/<int:pk>', views.ver_capitulos, name='verCapitulos'),
                 path('agregarFavorito/<int:pk_libro>', views.agregarFavorito, name='agregarFavorito'),
                   # <int:pk> significa que ver capitulos recibe de parametro la en pk

@@ -162,3 +162,17 @@ class Trailer(models.Model):
 
     def get_imagen(self):
         return self.imagen.url
+        
+    
+class Perfil(models.Model):
+    usuario = models.ForeignKey('Usuario', on_delete=models.SET_NULL, null=True)
+    username = models.CharField(max_length=20, verbose_name='Nombre de usuario')
+    historial = models.ManyToManyField('Libro', verbose_name='Historial',related_name="historial")
+    favoritos = models.ManyToManyField('Libro', verbose_name='Favoritos',related_name="favoritos")
+    selected = models.BooleanField(default=True, verbose_name='Perfil seleccionado')
+
+    def __str__(self):
+        return self.username
+
+    class Meta:
+        verbose_name_plural = "Perfiles"

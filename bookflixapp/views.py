@@ -4,13 +4,13 @@ from datetime import timedelta
 from django.utils import timezone
 from django.http import request as rq
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User, AnonymousUser
 from django.contrib.auth import hashers, authenticate
 from django.contrib.auth import login as do_login
 from .forms import RegistrationForm, CreateProfileForm
 from .forms import CustomAuthenticationForm as AuthenticationForm
 from .filters import LibroFilter
-
 from django.contrib.auth.decorators import login_required
 from django.db.models import F
 
@@ -34,6 +34,9 @@ def ver_historial(request):
 def high_to_low(modelo, campo):
     return modelo.objects.all().order_by('-' + str(campo))
 
+def high_to_low(modelo,campo):
+    return modelo.objects.all().order_by('-'+str(campo))
+
 
 def low_to_high(modelo, campo):
     return modelo.objects.all().order_by(campo)
@@ -45,11 +48,56 @@ def ver_libros(request):
     filtro = LibroFilter(request.GET, queryset=qs)
     return render(request, "ver_libros.html", {"filter": filtro})
 
+def agregar_favoritos(id_libro,perfil):
+    libro = Libro.objects.filter(id=id_libro)
+    perfil.favoritos.add(*libro)
+
+def eliminar_favoritos(id_libro,perfil):
+    libro = Libro.objects.filter(id=id_libro)
+    perfil.favoritos.remove(*libro)
+
+        
+@login_required
+def ver_libros(request,choice=''):
+    perfil = perfil_actual(request)
+    favoritos = list(perfil.favoritos.values_list('id', flat=True))
+    if request.method == 'POST':
+        id_libro = int(  list(request.POST.keys())[1]  )
+        #request.POST es un diccionario (dict_object) que en [0] tiene el csrf_token
+        #y en 1 el string del ID del libro que clickie (por eso hago el casteo a int)
+        if id_libro not in favoritos:
+            agregar_favoritos(id_libro,perfil)
+        else:
+            eliminar_favoritos(id_libro,perfil)
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+        #para redirigir a la misma url donde estaba
+    
+    #favoritos, historial y ver libros son lo mismo, solo cambia el
+    #queryset que se muestra (por eso directamente resumi todo en un
+    #parametro que determina el queryset elegido)
+    
+    if choice == 'favoritos':
+        qs = perfil.favoritos
+    elif choice == 'historial':
+        qs = perfil.historial
+    else:
+        qs = Libro.objects.all()
+        
+    filtro = LibroFilter(request.GET, queryset=qs.order_by('-contador'))
+    #como por defecto la opcion elegida es "Mas leido primero"
+    #hice que sea cual sea el queryset renderizado, se pase ordenado
+    #de mas a menos leido
+
+    return render(request, "ver_libros.html", {"filter": filtro,
+                                               "favoritos": favoritos})
+
 
 def action(request, pk_libro, pk_capitulo):
     libro = Libro.objects.filter(id=pk_libro)
     libro.update(contador=F('contador') + 1)
     capitulo = Capitulo.objects.filter(id=pk_capitulo)[0]
+    perfil = perfil_actual(request)
+    perfil.historial.add(*libro) #lo agrgo a la lista de libros leidos
     return redirect(capitulo.pdf.url)
 
 
@@ -185,7 +233,8 @@ def createprofile(request):
 
 @login_required
 def verperfil(request):
-    perfil = str(perfil_actual(request))
+    perfil = perfil_actual(request)
+    print(str(perfil))
     return render(request, 'perfil.html', {"perfil": perfil})
 
 
