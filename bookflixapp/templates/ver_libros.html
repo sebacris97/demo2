@@ -156,9 +156,9 @@
 		       {% csrf_token %}
                                         <input type="submit" name="{{libro.id}}"
 			{% if libro.id in favoritos %}
-				value="- FAVORITOS" class="btn btn-danger"
+				value="- FAVORITOS" class="fas fa-star"
 			{% else %}
-				value="+ FAVORITOS" class="btn btn-success"
+				value="+ FAVORITOS" class="far fa-star"
 			{% endif %}
                                         />
 		    </form>
