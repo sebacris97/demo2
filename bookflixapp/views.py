@@ -59,11 +59,8 @@ def ver_libros(request,choice=''):
     else:
         qs = Libro.objects.all()
         
-    filtro = LibroFilter(request.GET, queryset=qs.order_by('-contador'))
-    #como por defecto la opcion elegida es "Mas leido primero"
-    #hice que sea cual sea el queryset renderizado, se pase ordenado
-    #de mas a menos leido
-
+    filtro = LibroFilter(request.GET, queryset=qs)
+    
     return render(request, "ver_libros.html", {"filter": filtro,
                                                "favoritos": favoritos})
 

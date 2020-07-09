@@ -94,15 +94,6 @@
                 <span class="fa fa-th"></span>Cuadricula
             </a>
 
-<!--
-            <a href="#" id="most" class="btn btn-default btn-sm">
-                <span class="fa fa-arrow-up" aria-hidden="true"></span>Mas leidos primero
-            </a>
-            <a href="#" id="less" class="btn btn-default btn-sm">
-                <span class="fa fa-arrow-down" aria-hidden="true"></span>Menos leidos primero
-            </a>
--->
-
 	<form>
 	{{filter.form.ordering}}
 	</form>
@@ -142,7 +133,7 @@
 		<h4 class="group card-title inner list-group-item-heading">
 	            	    <form method="POST">
 		      {% csrf_token %}
-		      <button type="submit" name="{{libro.id}}">
+		      <button type="submit" name="{{libro.id}}" style="outline:none;">
 			{% if libro.id in favoritos %}
 				<i class="fa fa-star" aria-hidden="true"></i>
 			{% else %}

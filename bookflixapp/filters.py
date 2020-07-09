@@ -7,7 +7,9 @@ class LibroFilter(df.FilterSet):
 
     CHOICES = (
                 ('ascendente','Mas leidos primero'),
-                ('descendente','Menos leidos primero')
+                ('descendente','Menos leidos primero'),
+                ('masnuevo','Mas nuevo primero'),
+                ('masviejo','Mas viejo primero'),
               )
 
     ordering = df.ChoiceFilter(label='Ordering', choices=CHOICES, method='filter_by_order')
@@ -28,7 +30,16 @@ class LibroFilter(df.FilterSet):
         }
 
     def filter_by_order(self, queryset, name, value):
-        expression = '-contador' if value == 'ascendente' else 'contador'
+        
+        if value == 'ascendente':
+            expression = '-contador'
+        elif value == 'descendente':
+            expression = 'contador'
+        elif value == 'masnuevo':
+            expression = '-subido'
+        else:
+            expression = 'subido'
+            
         return queryset.order_by(expression)
 
         
