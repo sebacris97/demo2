@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from bookflixapp.models import Trailer, Libro, Novedad, Capitulo, Perfil, Usuario
+from bookflixapp.models import Trailer, Libro, Novedad, Capitulo, Perfil, Usuario, Comentario
 from datetime import timedelta
 from django.utils import timezone
 from django.http import HttpResponseRedirect
@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User, AnonymousUser
 from django.contrib.auth import hashers, authenticate
 from django.contrib.auth import login as do_login
-from .forms import RegistrationForm, CreateProfileForm
+from .forms import RegistrationForm, CreateProfileForm, ComentarioForm
 from .forms import CustomAuthenticationForm as AuthenticationForm
 from .filters import LibroFilter
 
@@ -51,23 +51,21 @@ def ver_libros(request,choice=''):
     #favoritos, historial y ver libros son lo mismo, solo cambia el
     #queryset que se muestra (por eso directamente resumi todo en un
     #parametro que determina el queryset elegido)
-    
+
     if choice == 'favoritos':
         qs = perfil.favoritos
     elif choice == 'historial':
         qs = perfil.historial
     else:
         qs = Libro.objects.all()
-        
+
     filtro = LibroFilter(request.GET, queryset=qs)
-    
+
     return render(request, "ver_libros.html", {"filter": filtro,
                                                "favoritos": favoritos})
 
 
-
-
-def action(request,pk_libro,pk_capitulo):
+def action(request, pk_libro, pk_capitulo):
     libro = Libro.objects.filter(id=pk_libro)
     libro.update(contador=F('contador') + 1)
     capitulo = Capitulo.objects.filter(id=pk_capitulo)[0]
@@ -75,17 +73,26 @@ def action(request,pk_libro,pk_capitulo):
     perfil.historial.add(*libro) #lo agrgo a la lista de libros leidos
     return redirect(capitulo.pdf.url)
 
+
 @login_required
 def ver_capitulos(request, pk):
     capitulos = Capitulo.objects.filter(libro__id=pk)
     if len(capitulos) > 0:  # parche temporal para los libros que no tienen capitulos
         titulo = capitulos[0].libro
+        comentarios = Comentario.objects.filter(libro__id=pk).order_by('-fecha')
+        if request.method == 'POST':
+            comentario_form = ComentarioForm(request.POST or None)
+            if comentario_form.is_valid():
+                comentario = comentario_form.cleaned_data["comentario"]
+                Comentario.objects.create(perfil=perfil_actual(request), comentario=comentario, libro=Libro.objects.get(pk=pk))
+        else:
+            comentario_form = ComentarioForm()
 
         # el parametro lo recibe de urls. lo que hago es filtrar los capitulos
         # que pertenecen al libro que recibo como parametro
         # (si hiciese objects.all() me estoy quedando con todos los capitulos de todos los libros)
 
-        return render(request, "ver_capitulos.html", {"capitulos": capitulos, "titulo": titulo})
+        return render(request, "ver_capitulos.html", {"capitulos": capitulos, "titulo": titulo, "comentarios": comentarios, "comentario_form": comentario_form})
     else:
         return redirect('/')  # si no se le subio capitulo te manda a index
 
@@ -93,6 +100,7 @@ def ver_capitulos(request, pk):
 @login_required
 def post_search(request):
     return redirect('/verLibros/?titulo__icontains=' + request.POST['search'])
+
 
 def index(request):
     d = timezone.now() - timedelta(days=7)

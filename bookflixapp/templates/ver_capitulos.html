@@ -23,7 +23,19 @@
 	{% endfor %}
 
 </table>
-
+ <br><br>
+ <hr>
+ <form method="post">
+ 	{% csrf_token %}
+ 	{{ comentario_form.as_p }}
+ 	<input type="submit" value="Comentar">
+ <div class="seccion-comentarios">
+ 	{% for comentario in comentarios %}
+ 		<blockquote class="blockquote">
+ 		 	<p class="mb-0">{{ cometario.comentario }}</p>
+  			<footer class="blockquote-footer"><cite title="Source Title">{{ comentario.perfil.username }}</cite></footer>
+		</blockquote>
+ 	{% endfor %}
 
 
 {% endblock %}

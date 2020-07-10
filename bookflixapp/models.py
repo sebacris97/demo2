@@ -1,5 +1,5 @@
 from django.db import models
-from django.core.validators import RegexValidator, MinValueValidator, FileExtensionValidator
+from django.core.validators import RegexValidator, MinValueValidator, FileExtensionValidator, MinLengthValidator
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -65,8 +65,6 @@ class Capitulo(models.Model):
                            validators=[FileExtensionValidator(['pdf'], 'Solo se permiten archivos pdf')])
 
 
-
-
 class Libro(models.Model):
     titulo = models.CharField(max_length=200)
     nropaginas = models.PositiveIntegerField(validators=[MinValueValidator(1)], verbose_name="Numero de paginas")
@@ -78,7 +76,7 @@ class Libro(models.Model):
     genero = models.ManyToManyField(Genero)
     agnoedicion = models.DateField(verbose_name="Año de edicion")
 
-    trailer = models.ForeignKey('Trailer',on_delete=models.CASCADE)
+    trailer = models.ForeignKey('Trailer', on_delete=models.CASCADE)
 
     contador = models.PositiveIntegerField(default=0, editable=False, verbose_name='Veces leido')
 
@@ -90,10 +88,9 @@ class Libro(models.Model):
     def __str__(self):
         return self.titulo
 
-
     class Meta:
         verbose_name_plural = "Libros"
-        ordering = ["-contador","-subido","titulo","isbn"]
+        ordering = ["-contador", "-subido", "titulo", "isbn"]
 
     def get_imagen(self):
         return self.trailer.get_imagen()
@@ -113,8 +110,6 @@ class Novedad(models.Model):
         ordering = ["-creacion"]
 
 
-
-
 class Usuario(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, default='')
     tarjeta = models.CharField(max_length=16, validators=[
@@ -123,7 +118,7 @@ class Usuario(models.Model):
     fecha_de_nacimiento = models.DateField(verbose_name='Fecha de nacimiento')
 
     class Meta:
-        ordering = ["user__email","fecha_de_nacimiento"]
+        ordering = ["user__email", "fecha_de_nacimiento"]
         verbose_name_plural = "Usuarios"
 
     def __str__(self):
@@ -133,11 +128,11 @@ class Trailer(models.Model):
 
     def content_file_name(instance, filename):
         nombre = filename
-        return '/'.join(['trailers', instance.titulo, nombre]) 
+        return '/'.join(['trailers', instance.titulo, nombre])
 
-    titulo = models.CharField(max_length=200,default='NONE',verbose_name="Titulo")
-    imagen = models.ImageField(null=True, upload_to=content_file_name, default='default.jpg',verbose_name="Imagen")
-    texto = models.TextField(max_length=500,default='NONE', verbose_name="Texto")
+    titulo = models.CharField(max_length=200, default='NONE', verbose_name="Titulo")
+    imagen = models.ImageField(null=True, upload_to=content_file_name, default='default.jpg', verbose_name="Imagen")
+    texto = models.TextField(max_length=500, default='NONE', verbose_name="Texto")
     creacion = models.DateTimeField(auto_now_add=True, verbose_name="Creacion")
 
     def __str__(self):
@@ -152,13 +147,13 @@ class Trailer(models.Model):
 
     def get_imagen(self):
         return self.imagen.url
-        
-    
+
+
 class Perfil(models.Model):
     usuario = models.ForeignKey('Usuario', on_delete=models.SET_NULL, null=True)
     username = models.CharField(max_length=20, verbose_name='Nombre de usuario')
-    historial = models.ManyToManyField('Libro', verbose_name='Historial',related_name="historial")
-    favoritos = models.ManyToManyField('Libro', verbose_name='Favoritos',related_name="favoritos")
+    historial = models.ManyToManyField('Libro', verbose_name='Historial', related_name="historial")
+    favoritos = models.ManyToManyField('Libro', verbose_name='Favoritos', related_name="favoritos")
     selected = models.BooleanField(default=True, verbose_name='Perfil seleccionado')
 
     def __str__(self):
@@ -166,3 +161,13 @@ class Perfil(models.Model):
 
     class Meta:
         verbose_name_plural = "Perfiles"
+
+
+class Comentario(models.Model):
+    perfil = models.ForeignKey('Perfil', on_delete=models.CASCADE)
+    libro = models.ForeignKey('Libro', on_delete=models.CASCADE)
+    comentario = models.TextField(max_length=1000, validators=[MinLengthValidator(20)])
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return '{}-{}'.format(str(self.perfil.username))
