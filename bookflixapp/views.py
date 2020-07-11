@@ -74,25 +74,32 @@ def action(request, pk_libro, pk_capitulo):
     return redirect(capitulo.pdf.url)
 
 
+def do_comment(request,form, libro):
+    if form.is_valid():
+        texto = form.cleaned_data["texto"]
+        Comentario.objects.create(perfil=perfil_actual(request), texto=texto, libro=libro)
+
+
+
 @login_required
 def ver_capitulos(request, pk):
     capitulos = Capitulo.objects.filter(libro__id=pk)
     if len(capitulos) > 0:  # parche temporal para los libros que no tienen capitulos
-        titulo = capitulos[0].libro
-        comentarios = Comentario.objects.filter(libro__id=pk).order_by('-fecha')
+        libro = capitulos[0].libro
+        comentarios = Comentario.objects.filter(libro__id=pk)
+        comentario_form = ComentarioForm(request.POST or None)
         if request.method == 'POST':
-            comentario_form = ComentarioForm(request.POST or None)
-            if comentario_form.is_valid():
-                comentario = comentario_form.cleaned_data["comentario"]
-                Comentario.objects.create(perfil=perfil_actual(request), comentario=comentario, libro=Libro.objects.get(pk=pk))
-        else:
-            comentario_form = ComentarioForm()
+            print(request.POST.get('enviar'))
+            do_comment(request,comentario_form,libro)
+
 
         # el parametro lo recibe de urls. lo que hago es filtrar los capitulos
         # que pertenecen al libro que recibo como parametro
         # (si hiciese objects.all() me estoy quedando con todos los capitulos de todos los libros)
 
-        return render(request, "ver_capitulos.html", {"capitulos": capitulos, "titulo": titulo, "comentarios": comentarios, "comentario_form": comentario_form})
+        return render(request, "ver_capitulos.html", {"capitulos": capitulos,
+                                "libro": libro, "comentarios": comentarios,
+                                "comentario_form": comentario_form})
     else:
         return redirect('/')  # si no se le subio capitulo te manda a index
 

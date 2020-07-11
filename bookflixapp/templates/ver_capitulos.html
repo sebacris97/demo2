@@ -4,7 +4,9 @@
 
 <br>
 
-<h2>{{titulo}}</h2>
+<h2>{{libro}}</h2>
+
+<br>
 
 <table  class="table">
 
@@ -23,19 +25,67 @@
 	{% endfor %}
 
 </table>
- <br><br>
- <hr>
- <form method="post">
- 	{% csrf_token %}
- 	{{ comentario_form.as_p }}
- 	<input type="submit" value="Comentar">
- <div class="seccion-comentarios">
- 	{% for comentario in comentarios %}
- 		<blockquote class="blockquote">
- 		 	<p class="mb-0">{{ comentario.comentario }}</p>
-  			<footer class="blockquote-footer"><cite title="Source Title">{{ comentario.perfil.username }}</cite></footer>
-		</blockquote>
- 	{% endfor %}
+
+
+
+<br><br>
+
+<hr>
+
+
+
+<div class="row">
+	<div class="col-md-6 mx-auto">
+		<h4>Comentarios:</h4>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-6 mx-auto">
+
+                        {% if comentarios %}
+                                {% for comentario in comentarios %}
+                                        <div class="card">
+                                             <div class="row">
+                                                <div class="col-md-12">
+                                                     <small class="text-muted float-right">{{comentario}}</small>
+                                                </div>
+                                             </div>
+                                             <div class="row">
+                                                <div class="col-md-12">
+			    <div style="padding:7px;">
+                                                         {{comentario.texto | linebreaks}}
+			    </div>
+                                                </div>
+                                             </div>
+                                        </div>
+                                {% endfor %}
+                        {% else %}
+		<br>
+                                <h5>No hay comentarios, se el primero</h3>
+		<br>
+                        {% endif %}
+
+                        <br>
+
+                        <div class="row">
+                                <div class="col-md-12">
+                                        <form method="POST">
+                                             {% csrf_token %}
+                                             {{comentario_form}}
+                                             <br>	
+                                             <button name="enviar" class="btn btn-success float-right" type="submit">Enviar</button>
+                                        </form>
+                                </div>
+                        <div>
+
+
+
+	</div>
+</div>
+
+
+<br>
 
 
 {% endblock %}

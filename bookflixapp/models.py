@@ -90,7 +90,7 @@ class Libro(models.Model):
 
     class Meta:
         verbose_name_plural = "Libros"
-        ordering = ["-contador", "-subido", "titulo", "isbn"]
+        ordering = ["-subido", "-contador", "titulo", "-agnoedicion", "isbn"]
 
     def get_imagen(self):
         return self.trailer.get_imagen()
@@ -132,7 +132,7 @@ class Trailer(models.Model):
 
     titulo = models.CharField(max_length=200, default='NONE', verbose_name="Titulo")
     imagen = models.ImageField(null=True, upload_to=content_file_name, default='default.jpg', verbose_name="Imagen")
-    texto = models.TextField(max_length=500, default='NONE', verbose_name="Texto")
+    texto = models.TextField(max_length=1000, default='NONE', verbose_name="Texto")
     creacion = models.DateTimeField(auto_now_add=True, verbose_name="Creacion")
 
     def __str__(self):
@@ -164,10 +164,14 @@ class Perfil(models.Model):
 
 
 class Comentario(models.Model):
-    perfil = models.ForeignKey('Perfil', on_delete=models.CASCADE)
-    libro = models.ForeignKey('Libro', on_delete=models.CASCADE)
-    comentario = models.TextField(max_length=1000, validators=[MinLengthValidator(20)])
+    perfil = models.ForeignKey('Perfil', on_delete=models.SET_NULL, null=True)
+    libro = models.ForeignKey('Libro', on_delete=models.SET_NULL, null=True)
+    texto = models.TextField(max_length=1000, validators=[MinLengthValidator(20)])
     fecha = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ['-fecha']
+
     def __str__(self):
-        return '{}-{}'.format(str(self.perfil.username))
+        return 'Comentado por ' + str(self.perfil) + ' el ' + str(self.fecha.strftime("%d-%m-%Y")) + ' a las ' + str(self.fecha.strftime("%H:%M"))
+

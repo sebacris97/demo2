@@ -54,6 +54,16 @@ class CreateProfileForm(forms.Form):
 
 
 class ComentarioForm(forms.ModelForm):
+
+    texto = forms.CharField(
+        label="Escriba un comentario",
+        widget=forms.Textarea(attrs={'maxlength':'1000', 'minlength':'20',
+                                     'placeholder':'Escribe un comentario',
+                                     'name':'texto', 'rows':'4',
+                                     'class':'form-control',
+                                     'style':'resize:none;'}),
+    )
+    
     class Meta:
         model = Comentario
-        fields = ('comentario',)
+        fields = ('texto',)
