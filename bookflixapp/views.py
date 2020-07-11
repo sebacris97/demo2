@@ -89,7 +89,8 @@ def ver_capitulos(request, pk):
         comentarios = Comentario.objects.filter(libro__id=pk)
         comentario_form = ComentarioForm(request.POST or None)
         if request.method == 'POST':
-            print(request.POST.get('enviar'))
+            if request.POST.get('enviar'):
+                print(request.POST)
             do_comment(request,comentario_form,libro)
 
 

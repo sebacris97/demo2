@@ -1,9 +1,6 @@
 from django.db import models
 from django.core.validators import RegexValidator, MinValueValidator, FileExtensionValidator, MinLengthValidator
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-
 
 # los validator te ahorran tener que hardcodear algunas validaciones que django ya provee
 
@@ -173,5 +170,15 @@ class Comentario(models.Model):
         ordering = ['-fecha']
 
     def __str__(self):
-        return 'Comentado por ' + str(self.perfil) + ' el ' + str(self.fecha.strftime("%d-%m-%Y")) + ' a las ' + str(self.fecha.strftime("%H:%M"))
+        """
+        los datetimefield son datetime.datetime objects de python
+        en la base de datos es almacena la fecha en utc y cuando uno cambia en settings
+        la time_zone solo cambia a fines de traduccion de django pero no el como se almacena en la db
+        por eso es necesaria transformarla cuando se muestra como string el objeto directo desde la db
+        y para eso usamos el metodo astimezone de datime que devuelve el objeto datetime de la timezone local
+        """
+        perfil = str(self.perfil)
+        fecha  = str(self.fecha.astimezone().strftime("%d-%m-%Y"))
+        hora   = str(self.fecha.astimezone().strftime("%H:%M"))
+        return 'Comentado por ' + perfil + ' el ' + fecha + ' a las ' + hora
 
