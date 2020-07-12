@@ -214,13 +214,38 @@ def verperfil(request):
 
 @login_required
 def selecperfil(request):
-    if request.method == "GET":
-        user = request.user
-        usuario = Usuario.objects.filter(user=user)
-        perfiles = Perfil.objects.filter(usuario=usuario[0])
-        return render(request, 'selec_perfil.html', {"perfiles": perfiles})
+    
+    #me quedo con el usuario logueado
+    usuario = Usuario.objects.get(user=request.user)
+    #me quedo con los perfiles del usuario logueado
+    perfiles = Perfil.objects.filter(usuario=usuario)
+
+    #si se prsiona seleccionar
     if request.method == "POST":
-        return render(request, 'perfil.html')
+
+        #me quedo con el id del usuario que seleccione
+        p_seleccionado_id = int(request.POST['perfil'])
+        #me quedo con el objeto del usuario que seleccione
+        p_seleccionado = get_object_or_404(Perfil, pk=p_seleccionado_id)
+
+        #si el perfil que seleccione no es el que actualmente esta seleccinado
+        if p_seleccionado.selected == False:
+            #me quedo con el perfil actual
+            p_actual = perfil_actual(request)
+            #lo "deselecciono" 
+            p_actual.selected = False
+            #y actualizo la base de datos
+            p_actual.save(update_fields=['selected'])
+            #ahora marco el que seleccione como seleccionado
+            p_seleccionado.selected = True
+            #y acutalizo la base de datos
+            p_seleccionado.save(update_fields=['selected'])
+
+        #redireccionamos a verperfil
+        return HttpResponseRedirect('/perfil')
+
+    #renderizo el template con los perfiles del usuario logueado
+    return render(request, 'selec_perfil.html', {"perfiles": perfiles})
 
 
 
