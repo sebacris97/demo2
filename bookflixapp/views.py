@@ -211,6 +211,7 @@ def verperfil(request):
     return render(request, 'perfil.html', {"perfil": perfil})
 
 
+
 @login_required
 def selecperfil(request):
     
@@ -218,7 +219,10 @@ def selecperfil(request):
     usuario = Usuario.objects.get(user=request.user)
     #me quedo con los perfiles del usuario logueado
     perfiles = Perfil.objects.filter(usuario=usuario)
+    
+    #me quedo con el perfil actual
     p_actual = perfil_actual(request)
+
     #si se prsiona seleccionar
     if request.method == "POST":
 
@@ -229,9 +233,8 @@ def selecperfil(request):
 
         #si el perfil que seleccione no es el que actualmente esta seleccinado
         if p_seleccionado.selected == False:
-            #me quedo con el perfil actual
-            p_actual = perfil_actual(request)
-            #lo "deselecciono" 
+
+            #"deselecciono" el perfil actual
             p_actual.selected = False
             #y actualizo la base de datos
             p_actual.save(update_fields=['selected'])
