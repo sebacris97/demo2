@@ -80,6 +80,14 @@ def do_comment(request, form, libro):
         Comentario.objects.create(perfil=perfil_actual(request), texto=texto, libro=libro)
 
 
+def borrarComentario(request, comentariopk, libropk):
+    comentario_actual = Comentario.objects.get(id=comentariopk)  
+    if request.method == "POST":
+        if perfil_actual(request).id == comentario_actual.perfil.id:
+            comentario_actual.delete()
+        return HttpResponseRedirect('/verCapitulos/'+str(libropk))
+    return render(request, "borrar_comentario.html", {'libro_id':libropk})
+
 @login_required
 def ver_capitulos(request, pk):
     capitulos = Capitulo.objects.filter(libro__id=pk)
@@ -90,9 +98,10 @@ def ver_capitulos(request, pk):
         comentario_form = ComentarioForm(request.POST or None)
         if request.method == 'POST':
             if request.POST.get('enviar'):
-                print(request.POST)
-            do_comment(request, comentario_form, libro)
-
+                do_comment(request, comentario_form, libro)
+            if request.POST.get('eliminar'):
+                borrarComentario(request, comentario_form, libro)
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
         # el parametro lo recibe de urls. lo que hago es filtrar los capitulos
         # que pertenecen al libro que recibo como parametro
@@ -100,17 +109,11 @@ def ver_capitulos(request, pk):
 
         return render(request, "ver_capitulos.html", {"capitulos": capitulos,
                                 "libro": libro, "comentarios": comentarios,
-                                "comentario_form": comentario_form, "perfilactual": perfilactual})
+                                "comentario_form": comentario_form, "perfil_actual": perfilactual})
     else:
         return redirect('/')  # si no se le subio capitulo te manda a index
 
 
-def borrarComentario(request, comentariopk, libropk):
-    comentario_actual = Comentario.objects.get(id=comentariopk)
-    if request.method == "POST":
-        comentario_actual.delete()
-        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-    return render(request, "borrar_comentario.html")
 
 
 @login_required
