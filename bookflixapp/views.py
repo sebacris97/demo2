@@ -208,7 +208,6 @@ def createprofile(request):
 @login_required
 def verperfil(request):
     perfil = perfil_actual(request)
-    print(str(perfil))
     return render(request, 'perfil.html', {"perfil": perfil})
 
 
@@ -219,7 +218,7 @@ def selecperfil(request):
     usuario = Usuario.objects.get(user=request.user)
     #me quedo con los perfiles del usuario logueado
     perfiles = Perfil.objects.filter(usuario=usuario)
-
+    p_actual = perfil_actual(request)
     #si se prsiona seleccionar
     if request.method == "POST":
 
@@ -245,7 +244,5 @@ def selecperfil(request):
         return HttpResponseRedirect('/perfil')
 
     #renderizo el template con los perfiles del usuario logueado
-    return render(request, 'selec_perfil.html', {"perfiles": perfiles})
-
-
+    return render(request, 'selec_perfil.html', {"perfiles": perfiles,"p_actual":p_actual})
 
