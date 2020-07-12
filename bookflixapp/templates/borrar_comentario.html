@@ -4,7 +4,10 @@
 <p>¿Estas seguro que quiere borrar el comentario?</p>
 
 <form method="POST">
-	<a href="/verCapitulos/{{libro.id}}">Cancelar</a>
+	{% csrf_token %}
 	<input type="submit" name="Aceptar">
 </form>
+
+<a href="/verCapitulos/{{libro_id}}">Cancelar</a>
+
 {% endblock %}
