@@ -74,11 +74,10 @@ def action(request, pk_libro, pk_capitulo):
     return redirect(capitulo.pdf.url)
 
 
-def do_comment(request,form, libro):
+def do_comment(request, form, libro):
     if form.is_valid():
         texto = form.cleaned_data["texto"]
         Comentario.objects.create(perfil=perfil_actual(request), texto=texto, libro=libro)
-
 
 
 @login_required
@@ -86,12 +85,13 @@ def ver_capitulos(request, pk):
     capitulos = Capitulo.objects.filter(libro__id=pk)
     if len(capitulos) > 0:  # parche temporal para los libros que no tienen capitulos
         libro = capitulos[0].libro
+        perfilactual = perfil_actual(request)
         comentarios = Comentario.objects.filter(libro__id=pk)
         comentario_form = ComentarioForm(request.POST or None)
         if request.method == 'POST':
             if request.POST.get('enviar'):
                 print(request.POST)
-            do_comment(request,comentario_form,libro)
+            do_comment(request, comentario_form, libro)
 
 
         # el parametro lo recibe de urls. lo que hago es filtrar los capitulos
@@ -100,9 +100,17 @@ def ver_capitulos(request, pk):
 
         return render(request, "ver_capitulos.html", {"capitulos": capitulos,
                                 "libro": libro, "comentarios": comentarios,
-                                "comentario_form": comentario_form})
+                                "comentario_form": comentario_form, "perfilactual": perfilactual})
     else:
         return redirect('/')  # si no se le subio capitulo te manda a index
+
+
+def borrarComentario(request, comentariopk, libropk):
+    comentario_actual = Comentario.objects.get(id=comentariopk)
+    if request.method == "POST":
+        comentario_actual.delete()
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    return render(request, "borrar_comentario.html")
 
 
 @login_required
