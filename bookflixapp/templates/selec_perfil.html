@@ -12,13 +12,16 @@
             {% csrf_token %}
             <select name="perfil">
             {% for perfil in perfiles %} 
-                <option {% if p_actual.selected %}selected{% endif %} value="{{perfil.id}}">{{perfil}}</option>
+                <option {% if perfil.selected %}selected{% endif %} value="{{perfil.id}}">{{perfil}}</option>
             {% endfor %}
             </select> 
 
-<br><br>
+            <br><br>
 
-        <p><input type="submit" value="Seleccionar"></p></form>
+        <p><input type="submit" value="Seleccionar"></p>
+        
+        </form>
 
     </div>
+
 {% endblock %}
