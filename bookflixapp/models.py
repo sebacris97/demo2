@@ -113,7 +113,7 @@ class Usuario(models.Model):
         RegexValidator('^(\d{16})$',
                        'Debe introducir un numero de 16 digitos')], verbose_name="Tarjeta de credito")
     fecha_de_nacimiento = models.DateField(verbose_name='Fecha de nacimiento')
-
+    cantPerfiles = models.IntegerField(default=2)
     class Meta:
         ordering = ["user__email", "fecha_de_nacimiento"]
         verbose_name_plural = "Usuarios"

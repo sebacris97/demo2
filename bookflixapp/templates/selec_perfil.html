@@ -8,7 +8,7 @@
 <title>Seleccionar Perfil</title>
     <div style="text-align:center;">
         <h3>Selecciona el perfil.</h3>
-        <form action="/perfil/" method="POST">{% csrf_token %}
+        <form method="POST">{% csrf_token %}
             <select name="nombre">
             {% for perfil in perfiles %}
                 <option name="nombe">{{perfil.username}}</option>

@@ -6,13 +6,15 @@
 
 <h2>Crear Perfil</h2>
 
-<form method="POST">
-    {{ form.as_p }}
-    {% csrf_token %}
-    <button type="submit">Crear</button>
-</form>
-
-<hr />
+{% if cant1 <= cant2 %}
+    <h3>No se pueden agregar perfiles, cantidad de perfiles alcanzada</h3>
+{% else %}
+    <form method="POST">
+        {{ form.as_p }}
+        {% csrf_token %}
+        <button type="submit">Crear</button>
+    </form>
+{% endif %}
 
 
 {% endblock %}

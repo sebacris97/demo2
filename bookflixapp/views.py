@@ -3,6 +3,7 @@ from bookflixapp.models import Trailer, Libro, Novedad, Capitulo, Perfil, Usuari
 from datetime import timedelta
 from django.utils import timezone
 from django.http import HttpResponseRedirect
+from django.core.exceptions import ValidationError
 
 from django.contrib.auth.models import User, AnonymousUser
 from django.contrib.auth import hashers, authenticate
@@ -186,12 +187,15 @@ def login(request):
 
 @login_required
 def createprofile(request):
+    user = request.user
+    usuario = Usuario.objects.get(user=user)
+    pp = Perfil.objects.filter(usuario=usuario)
+    c = pp.count()
+    u = usuario.cantPerfiles
     if request.method == "POST":
         form = CreateProfileForm(data=request.POST)
         if form.is_valid():
             profilename = form.cleaned_data["profilename"]
-            user = request.user
-            usuario = Usuario.objects.get(user=user)
             p = Perfil.objects.filter(usuario=usuario, selected=True)
             per = p[0]
             per.selected = False
@@ -202,7 +206,7 @@ def createprofile(request):
                 return redirect("/")
     else:
         form = CreateProfileForm()
-        return render(request, "crear_perfil.html", {'form': form})
+        return render(request, "crear_perfil.html", {'form': form, 'cant1': usuario.cantPerfiles, 'cant2': c})
 
 
 @login_required
@@ -220,7 +224,19 @@ def selecperfil(request):
         perfiles = Perfil.objects.filter(usuario=usuario[0])
         return render(request, 'selec_perfil.html', {"perfiles": perfiles})
     if request.method == "POST":
-        return render(request, 'perfil.html')
+        name = request.POST["nombre"]
+        user = request.user
+        usuario = Usuario.objects.get(user=user)
+        perfil_sel = Perfil.objects.filter(selected=True, usuario=usuario)
+        perfil = Perfil.objects.filter(username=name, usuario=usuario)
+        p = perfil_sel[0]
+        p.selected = False
+        p.save()
+        p2 = perfil[0]
+        p2.selected = True
+        p2.save()
+        return render(request, 'perfil.html', {"perfil": perfil[0]})
+
 
 
 
