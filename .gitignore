@@ -4,4 +4,4 @@ bookflix/__pycache__/
 media/libros/*
 media/trailers/*
 bookflix/settings.py
-bookflix/settings.py
+bookflixapp/management/commands/__pycache__
