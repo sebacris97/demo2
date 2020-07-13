@@ -243,7 +243,7 @@ def selecperfil(request):
         #me quedo con el id del usuario que seleccione
         p_seleccionado_id = int(request.POST['perfil'])
         #me quedo con el objeto del usuario que seleccione
-        p_seleccionado = get_object_or_404(Perfil, pk=p_seleccionado_id)
+        p_seleccionado = Perfil.objects.get(id=p_seleccionado_id)
 
         #si el perfil que seleccione no es el que actualmente esta seleccinado
         if p_seleccionado.selected == False:
