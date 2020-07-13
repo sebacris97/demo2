@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<br><br>
+
+
+
+<div class="row">
+<div class="col-md-6 mx-auto">
+
+<h5 style="text-align:center; padding:10px;">¿Estas seguro que quiere borrar el comentario?</h5>
+
+</div>
+</div>
+<div class="row">
+<div class="col-md-3 mx-auto">
+
+<form method="POST">
+	{% csrf_token %}
+	<input class="btn btn-success float-left" type="submit" name="Aceptar">
+	<a class="btn btn-danger float-right" href="/verCapitulos/{{libro_id}}">Cancelar</a>
+	<br>
+</form>
+
+</div>
+</div>
+
+
+
+{% endblock %}
