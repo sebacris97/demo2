@@ -3,7 +3,6 @@ from bookflixapp.models import Trailer, Libro, Novedad, Capitulo, Perfil, Usuari
 from datetime import timedelta
 from django.utils import timezone
 from django.http import HttpResponseRedirect
-from django.core.exceptions import ValidationError
 
 from django.contrib.auth.models import User, AnonymousUser
 from django.contrib.auth import hashers, authenticate
@@ -33,7 +32,7 @@ def eliminar_favoritos(id_libro,perfil):
     libro = Libro.objects.filter(id=id_libro)
     perfil.favoritos.remove(*libro)
 
-        
+
 @login_required
 def ver_libros(request,choice=''):
     perfil = perfil_actual(request)
@@ -48,7 +47,7 @@ def ver_libros(request,choice=''):
             eliminar_favoritos(id_libro,perfil)
         return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         #para redirigir a la misma url donde estaba
-    
+
     #favoritos, historial y ver libros son lo mismo, solo cambia el
     #queryset que se muestra (por eso directamente resumi todo en un
     #parametro que determina el queryset elegido)
@@ -75,25 +74,34 @@ def action(request, pk_libro, pk_capitulo):
     return redirect(capitulo.pdf.url)
 
 
-def do_comment(request,form, libro):
+def do_comment(request, form, libro):
     if form.is_valid():
         texto = form.cleaned_data["texto"]
         Comentario.objects.create(perfil=perfil_actual(request), texto=texto, libro=libro)
 
 
+def borrarComentario(request, comentariopk, libropk):
+    comentario_actual = Comentario.objects.get(id=comentariopk)
+    if request.method == "POST":
+        if perfil_actual(request).id == comentario_actual.perfil.id:
+            comentario_actual.delete()
+        return HttpResponseRedirect('/verCapitulos/'+str(libropk))
+    return render(request, "borrar_comentario.html", {'libro_id':libropk})
 
 @login_required
 def ver_capitulos(request, pk):
     capitulos = Capitulo.objects.filter(libro__id=pk)
     if len(capitulos) > 0:  # parche temporal para los libros que no tienen capitulos
         libro = capitulos[0].libro
+        perfilactual = perfil_actual(request)
         comentarios = Comentario.objects.filter(libro__id=pk)
         comentario_form = ComentarioForm(request.POST or None)
         if request.method == 'POST':
             if request.POST.get('enviar'):
-                print(request.POST)
-            do_comment(request,comentario_form,libro)
-
+                do_comment(request, comentario_form, libro)
+            if request.POST.get('eliminar'):
+                borrarComentario(request, comentario_form, libro)
+            return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
         # el parametro lo recibe de urls. lo que hago es filtrar los capitulos
         # que pertenecen al libro que recibo como parametro
@@ -101,9 +109,11 @@ def ver_capitulos(request, pk):
 
         return render(request, "ver_capitulos.html", {"capitulos": capitulos,
                                 "libro": libro, "comentarios": comentarios,
-                                "comentario_form": comentario_form})
+                                "comentario_form": comentario_form, "perfil_actual": perfilactual})
     else:
         return redirect('/')  # si no se le subio capitulo te manda a index
+
+
 
 
 @login_required
@@ -128,7 +138,7 @@ def register(request):
     # Creamos el formulario de autenticación vacío
     form = RegistrationForm(data=request.POST or None)
     if request.method == "POST":
-        
+
         # Si el formulario es válido...
         if form.is_valid():
 
@@ -142,7 +152,7 @@ def register(request):
             u = User(username=username, first_name=first_name, last_name=last_name, password=realpassword, email=username)
             u.save()
             user = Usuario(user=u, fecha_de_nacimiento=fecha, tarjeta=tarjeta)
-            # Si el usuario se crea correctamente 
+            # Si el usuario se crea correctamente
             if user is not None:
                 # Hacemos el login manualmente
                 user.save()
@@ -206,37 +216,50 @@ def createprofile(request):
                 return redirect("/")
     else:
         form = CreateProfileForm()
-        return render(request, "crear_perfil.html", {'form': form, 'cant1': usuario.cantPerfiles, 'cant2': c})
+        return render(request, "crear_perfil.html", {'form': form})
 
 
 @login_required
 def verperfil(request):
     perfil = perfil_actual(request)
-    print(str(perfil))
     return render(request, 'perfil.html', {"perfil": perfil})
+
 
 
 @login_required
 def selecperfil(request):
-    if request.method == "GET":
-        user = request.user
-        usuario = Usuario.objects.filter(user=user)
-        perfiles = Perfil.objects.filter(usuario=usuario[0])
-        return render(request, 'selec_perfil.html', {"perfiles": perfiles})
+
+    #me quedo con el usuario logueado
+    usuario = Usuario.objects.get(user=request.user)
+    #me quedo con los perfiles del usuario logueado
+    perfiles = Perfil.objects.filter(usuario=usuario)
+
+    #me quedo con el perfil actual
+    p_actual = perfil_actual(request)
+
+    #si se prsiona seleccionar
     if request.method == "POST":
-        name = request.POST["nombre"]
-        user = request.user
-        usuario = Usuario.objects.get(user=user)
-        perfil_sel = Perfil.objects.filter(selected=True, usuario=usuario)
-        perfil = Perfil.objects.filter(username=name, usuario=usuario)
-        p = perfil_sel[0]
-        p.selected = False
-        p.save()
-        p2 = perfil[0]
-        p2.selected = True
-        p2.save()
-        return render(request, 'perfil.html', {"perfil": perfil[0]})
 
+        #me quedo con el id del usuario que seleccione
+        p_seleccionado_id = int(request.POST['perfil'])
+        #me quedo con el objeto del usuario que seleccione
+        p_seleccionado = get_object_or_404(Perfil, pk=p_seleccionado_id)
 
+        #si el perfil que seleccione no es el que actualmente esta seleccinado
+        if p_seleccionado.selected == False:
 
+            #"deselecciono" el perfil actual
+            p_actual.selected = False
+            #y actualizo la base de datos
+            p_actual.save(update_fields=['selected'])
+            #ahora marco el que seleccione como seleccionado
+            p_seleccionado.selected = True
+            #y acutalizo la base de datos
+            p_seleccionado.save(update_fields=['selected'])
+
+        #redireccionamos a verperfil
+        return HttpResponseRedirect('/perfil')
+
+    #renderizo el template con los perfiles del usuario logueado
+    return render(request, 'selec_perfil.html', {"perfiles": perfiles,"p_actual":p_actual})
 
