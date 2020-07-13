@@ -48,8 +48,35 @@
                                         <div class="card">
                                              <div class="row">
                                                 <div class="col-md-12">
-			{% load tz %}
-                                                     <small class="text-muted float-right">{{comentario}}</small>
+                                                     <small class="text-muted float-left">{{comentario}}</small>
+
+			     {% if perfil_actual.id == comentario.perfil.id or request.user.is_superuser %}
+
+<style>
+.boton{
+	background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	padding-right: 7px;
+}
+
+button:focus {outline:0;}
+</style>
+
+			         <form method="POST">
+
+				   <input value="{{comentario.id}}" name="eliminar" type="hidden"/>
+				   <button class="float-right boton" type="button"/>
+				   	<a href="/borrar_comentario/{{comentario.id}}/{{comentario.libro.id}}"><i class="fa fa-trash" aria-hidden="true"></i></a>
+				   </button>
+
+			         </form>
+
+			     {% endif %}
+
                                                 </div>
                                              </div>
                                              <div class="row">
@@ -74,8 +101,8 @@
                                         <form method="POST">
                                              {% csrf_token %}
                                              {{comentario_form}}
-                                             <br>	
-                                             <button name="enviar" class="btn btn-success float-right" type="submit">Enviar</button>
+                                             <br>
+		             <input name="enviar" class="btn btn-success float-right" type="submit" value="Comentar"/>
                                         </form>
                                 </div>
                         <div>
