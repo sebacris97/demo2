@@ -8,10 +8,11 @@
 <title>Seleccionar Perfil</title>
     <div style="text-align:center;">
         <h3>Selecciona el perfil.</h3>
-        <form method="POST">{% csrf_token %}
-            <select name="nombre">
-            {% for perfil in perfiles %}
-                <option name="nombe">{{perfil.username}}</option>
+        <form method="POST">
+            {% csrf_token %}
+            <select name="perfil">
+            {% for perfil in perfiles %} 
+                <option {% if p_actual.selected %}selected{% endif %} value="{{perfil.id}}">{{perfil}}</option>
             {% endfor %}
             </select> 
 
