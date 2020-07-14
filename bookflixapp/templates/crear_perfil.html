@@ -5,16 +5,18 @@
 {% block content %}
 
 <h2>Crear Perfil</h2>
-
-{% if cant1 <= cant2 %}
-    <h3>No se pueden agregar perfiles, cantidad de perfiles alcanzada</h3>
+{% if form == None %}
+    <h3>El nombre de perfil ya esta en uso</h3>
 {% else %}
-    <form method="POST">
-        {{ form.as_p }}
-        {% csrf_token %}
-        <button type="submit">Crear</button>
-    </form>
+    {% if cant1 <= cant2 %}
+        <h3>No se pueden agregar perfiles, cantidad de perfiles alcanzada</h3>
+    {% else %}
+        <form method="POST">
+            {{ form.as_p }}
+            {% csrf_token %}
+            <button type="submit">Crear</button>
+        </form>
+    {% endif %}
 {% endif %}
-
 
 {% endblock %}

@@ -52,6 +52,21 @@ class RegistrationForm(UserCreationForm):
 class CreateProfileForm(forms.Form):
     profilename = forms.CharField(required=True, label="Nombre de Perfil")
 
+    def __init__(self, user, *args, **kwargs):
+        self.user = user
+        super(CreateProfileForm, self).__init__(*args, **kwargs)
+
+    def clean_profilename(self):
+        data = self.cleaned_data['profilename']
+        aus = self.user
+        u = User.objects.get(email=aus)
+        usu = Usuario.objects.get(user=u)
+        try:
+            p = Perfil.objects.get(usuario=usu, username=data)
+        except Perfil.DoesNotExist:
+            return data
+        raise ValidationError("Nombre de perfil ya usado")
+
 
 class ComentarioForm(forms.ModelForm):
 

@@ -203,7 +203,7 @@ def createprofile(request):
     c = pp.count()
     u = usuario.cantPerfiles
     if request.method == "POST":
-        form = CreateProfileForm(data=request.POST)
+        form = CreateProfileForm(user=user, data=request.POST)
         if form.is_valid():
             profilename = form.cleaned_data["profilename"]
             p = Perfil.objects.filter(usuario=usuario, selected=True)
@@ -213,10 +213,12 @@ def createprofile(request):
             profile = Perfil(usuario=usuario, username=profilename)
             profile.save()
             if profile is not None:
-                return redirect("/")
+                return HttpResponseRedirect("/")
+        else:
+            return render(request, "crear_perfil.html", {'form': None})
     else:
-        form = CreateProfileForm()
-        return render(request, "crear_perfil.html", {'form': form})
+        form = CreateProfileForm(user)
+        return render(request, "crear_perfil.html", {'form': form, 'cant1': usuario.cantPerfiles, 'cant2': c})
 
 
 @login_required
@@ -262,4 +264,16 @@ def selecperfil(request):
 
     #renderizo el template con los perfiles del usuario logueado
     return render(request, 'selec_perfil.html', {"perfiles": perfiles,"p_actual":p_actual})
+
+
+@login_required
+def verusuario(request):
+    if request.method == 'POST':
+        pass
+    else:
+        user = request.user
+        usuario = Usuario.objects.get(user=user)
+        return render(request, 'ver_usuario.html', {'user': user, 'usuario': usuario})
+
+
 
