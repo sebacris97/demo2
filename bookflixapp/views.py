@@ -201,7 +201,6 @@ def createprofile(request):
     usuario = Usuario.objects.get(user=user)
     pp = Perfil.objects.filter(usuario=usuario)
     c = pp.count()
-    u = usuario.cantPerfiles
     if request.method == "POST":
         form = CreateProfileForm(user=user, data=request.POST)
         if form.is_valid():
@@ -227,7 +226,6 @@ def verperfil(request):
     return render(request, 'perfil.html', {"perfil": perfil})
 
 
-
 @login_required
 def selecperfil(request):
 
@@ -243,9 +241,9 @@ def selecperfil(request):
     if request.method == "POST":
 
         #me quedo con el id del usuario que seleccione
-        p_seleccionado_id = int(request.POST['perfil'])
+        p_seleccionado_n = request.POST['nombre']
         #me quedo con el objeto del usuario que seleccione
-        p_seleccionado = get_object_or_404(Perfil, pk=p_seleccionado_id)
+        p_seleccionado = Perfil.objects.get(username=p_seleccionado_n)
 
         #si el perfil que seleccione no es el que actualmente esta seleccinado
         if p_seleccionado.selected == False:
@@ -269,11 +267,66 @@ def selecperfil(request):
 @login_required
 def verusuario(request):
     if request.method == 'POST':
-        pass
+        return HttpResponseRedirect('/')
     else:
         user = request.user
         usuario = Usuario.objects.get(user=user)
         return render(request, 'ver_usuario.html', {'user': user, 'usuario': usuario})
 
 
+@login_required
+def borrarperfil(request):
+    usuario = Usuario.objects.get(user=request.user)
+    perfiles = Perfil.objects.filter(usuario=usuario)
+    cant = perfiles.count()
+    if request.method == "POST":
+        p_seleccionado_id = request.POST['nombre']
+        p_seleccionado = Perfil.objects.get(username=p_seleccionado_id)
+        p = Perfil.objects.filter(usuario=usuario)
+        for per in p:
+            if per == p_seleccionado:
+                if not p_seleccionado.selected:
+                    per.selected = True
+                    per.save(update_fields=['selected'])
+                p_seleccionado.delete()
+        return render(request, 'borrar_perfil.html', {"cant": -1})
+    return render(request, 'borrar_perfil.html', {"perfiles": perfiles, "cant": cant})
 
+
+@login_required
+def modificardatos(request):
+    user = request.user
+    usuario = Usuario.objects.get(user=user)
+    if request.method == 'POST':
+        nom = request.POST['nombre']
+        ape = request.POST['apellido']
+        contra = request.POST['contraseña']
+        fecha = request.POST['fecha']
+        if nom != "":
+            user.first_name = nom
+        if ape != "":
+            user.last_name = ape
+        if contra != "":
+            realpass = hashers.make_password(contra)
+            user.password = realpass
+        if fecha != "":
+            usuario.fecha_de_nacimiento = fecha
+        user.save()
+        usuario.save()
+        return HttpResponseRedirect('/')
+    else:
+        return render(request, 'modf_usuario.html', {'user': user, 'usuario': usuario})
+
+@login_required
+def borrarusuario(request):
+    user = request.user
+    form = AuthenticationForm
+    if request.method == "POST":
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            usr = authenticate(username=username, password=password)
+            if usrr is not None:
+                usr.delete()
+                return HttpResponseRedirect("/")
+    return render(request, 'borrar_usuario.html', {'form': form, 'user': user})

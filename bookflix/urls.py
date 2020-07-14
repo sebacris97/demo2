@@ -34,10 +34,13 @@ urlpatterns = [
                 path('perfil/', views.verperfil, name='verperfil'),
                 path('selecPerfil/', views.selecperfil, name='seleccionarPerfil'),
                 path('crearPerfil/', views.createprofile, name='crearPerfil'),
+                path('eliminarPerfil/', views.borrarperfil, name='eliminarPerfil'),
                 path('verLibros/', views.ver_libros, name='verLibros'),
                 path('verLibros/<str:choice>', views.ver_libros, name='verLibros'),
                 path('verCapitulos/<int:pk>', views.ver_capitulos, name='verCapitulos'),
                 path('verDatos/', views.verusuario, name='verDatos'),
+                path('modificarDatos/', views.modificardatos, name='modificarDatos'),
+                path('eliminarDatos/', views.borrarusuario, name='eliminarDatos'),
                 path('borrar_comentario/<int:comentariopk>/<int:libropk>', views.borrarComentario, name='borrar_comentario'),
                   # <int:pk> significa que ver capitulos recibe de parametro la en pk
                   # la clave primaria del libro desde el template que se lo llama (desde verLibros)
