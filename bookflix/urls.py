@@ -42,6 +42,9 @@ urlpatterns = [
                 path('verDatos/', views.verusuario, name='verDatos'),
                 path('modificarDatos/', views.modificardatos, name='modificarDatos'),
                 path('eliminarDatos/', views.borrarusuario, name='eliminarDatos'),
+                path('pagarSuscripcion/', views.pagarsuscripcion, name='pagarSuscripcion'),
+                path('premium/', views.pasarpremium, name='pasarPremium'),
+                path('normal/', views.pasarnormal, name='pasarNormal'),
                 path('borrar_comentario/<int:comentariopk>/<int:libropk>', views.borrarComentario, name='borrar_comentario'),
                   # <int:pk> significa que ver capitulos recibe de parametro la en pk
                   # la clave primaria del libro desde el template que se lo llama (desde verLibros)

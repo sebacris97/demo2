@@ -5,9 +5,9 @@
 
 <br>
 
-<title>Seleccionar Perfil</title>
+<title>Eliminar Perfil</title>
 
-{% if cant > 1 %}
+{% if cant > 1 and cant < 10 %}
     <div style="text-align:center;">
         <h3>Selecciona el perfil a eliminar.</h3>
         <form method="POST">{% csrf_token %}
@@ -24,11 +24,29 @@
     </div>
 
 {% else %}
-    {% if cant < 0 %}
+    {% if cant == 10 %}
+    <h2>Necesita eliminar perfiles para convertirse en usuario normal</h2>
+        <div style="text-align:center;">
+        <h3>Selecciona el perfil a eliminar.</h3>
+        <form method="POST">{% csrf_token %}
+            <select name="nombre">
+            {% for perfil in perfiles %}
+                <option name="nombe">{{perfil.username}}</option>
+            {% endfor %}
+            </select>
+
+<br><br>
+
+        <p><input type="submit" value="Eliminar"></p></form>
+
+    </div>
+    {% else %}
+    {% if cant == 0 %}
         <h2>El perfil ha sido eliminado correctamente</h2>
         <a class="btn btn-primary" href="/" role="button">Volver</a>
     {% else %}
         <h2>Tiene que haber mas de un perfil para poder eliminar</h2>
     {% endif %}
+{% endif %}
 {% endif %}
 {% endblock %}

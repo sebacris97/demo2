@@ -18,8 +18,15 @@
   <form method="POST">
      {% csrf_token %}
      {{ form.as_p }}
+      <div class="form-group">
+    <label for="exampleFormControlSelect1">Tipo de membresia</label>
+    <select class="form-control" name="membresia" id="exampleFormControlSelect1">
+      <option>Normal (Solo pueden crearse 2 perfiles)</option>
+      <option>Premium (Pueden crearse hasta 4 perfiles)</option>
+    </select>
+  </div>
      <br>
-     <button class="btn btn-primary" type="submit">Registrar</button>
+     <button class="btn btn-primary" type="submit">Continuar</button>
   </form>
 </div>
 

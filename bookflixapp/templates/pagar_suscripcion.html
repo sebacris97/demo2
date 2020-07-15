@@ -1,0 +1,38 @@
+{% if user.is_authenticated %}
+    {% include 'base.html' %}
+{% else %}
+    {% include 'base_login.html' %}
+{% endif %}
+
+{% load static %}
+<title>Pagar Suscripcion</title>
+
+
+{% block content %}
+
+<div>
+    <h3 align="center">Pagar Suscripcion</h3>
+</div>
+{% if cant == 1 %}
+<form method="POST">{% csrf_token %}
+    <div class="form-group col-md-2">
+        <label for="tarjeta">Numero De Tarjeta</label>
+        <input id="tarjeta" class="form-control" type="text" minlength="16" maxlength="16" placeholder="1234567891123456"
+               name="tarjeta" autocomplete="off" required>
+        <button class="btn btn-primary" value="Pagar">Pagar</button>
+    </div>
+</form>
+{% else %}
+    {% if cant == 0 %}
+    <div class="col">
+    <h4>Ingresa la tarjeta registrada</h4>
+      <a class="btn btn-warning" href="/pagarSuscripcion" role="button">Volver</a>
+    </div>
+{% else %}
+    <div class="col">
+    <h4>Pago registrado con exito</h4>
+      <a class="btn btn-warning" href="/" role="button">Home</a>
+    </div>
+{% endif %}
+{% endif %}
+{% endblock %}

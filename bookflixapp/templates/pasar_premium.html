@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+<title>Premium</title>
+
+{% block content %}
+<div>
+    <h1 align="center">Pasar a Premium</h1>
+</div>
+{% if cant == 1 %}
+    <form method="POST">{% csrf_token %}
+        <div class="form-group col-md-2">
+            <label for="tarjeta">Numero De Tarjeta</label>
+            <input id="tarjeta" class="form-control" type="text" minlength="16" maxlength="16" placeholder="1234567891123456"
+               name="tarjeta" autocomplete="off" required>
+            <button class="btn btn-success" value="Cambiar">Cambiar</button>
+        </div>
+    </form>
+{% else %}
+    {% if cant == 0 %}
+    <div class="col">
+    <h4>Ingresa la tarjeta registrada</h4>
+      <a class="btn btn-warning" href="/premium" role="button">Volver</a>
+    </div>
+{% else %}
+    <div class="col">
+    <h4>Usted ahora es usuario premium</h4>
+      <a class="btn btn-warning" href="/" role="button">Home</a>
+    </div>
+{% endif %}
+{% endif %}
+{% endblock %}

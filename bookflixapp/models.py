@@ -114,6 +114,7 @@ class Usuario(models.Model):
                        'Debe introducir un numero de 16 digitos')], verbose_name="Tarjeta de credito")
     fecha_de_nacimiento = models.DateField(verbose_name='Fecha de nacimiento')
     cantPerfiles = models.IntegerField(default=2)
+    is_premium = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["user__email", "fecha_de_nacimiento"]

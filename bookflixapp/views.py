@@ -3,6 +3,7 @@ from bookflixapp.models import Trailer, Libro, Novedad, Capitulo, Perfil, Usuari
 from datetime import timedelta
 from django.utils import timezone
 from django.http import HttpResponseRedirect
+from django.utils.datastructures import MultiValueDictKeyError
 
 from django.contrib.auth.models import User, AnonymousUser
 from django.contrib.auth import hashers, authenticate
@@ -147,11 +148,17 @@ def register(request):
             realpassword = hashers.make_password(password=form.cleaned_data["password1"])
             first_name = form.cleaned_data["first_name"]
             last_name = form.cleaned_data["last_name"]
-            tarjeta = form.cleaned_data["tarjeta"]
             fecha = form.cleaned_data["fecha_de_nacimiento"]
-            u = User(username=username, first_name=first_name, last_name=last_name, password=realpassword, email=username)
+            membresia = request.POST['membresia']
+            mem = membresia.split()
+            m = mem[0]
+            u = User(username=username, first_name=first_name, last_name=last_name, password=realpassword,
+                     email=username)
             u.save()
-            user = Usuario(user=u, fecha_de_nacimiento=fecha, tarjeta=tarjeta)
+            if m == 'Premium':
+                user = Usuario(user=u, fecha_de_nacimiento=fecha, is_premium=True)
+            else:
+                user = Usuario(user=u, fecha_de_nacimiento=fecha)
             # Si el usuario se crea correctamente
             if user is not None:
                 # Hacemos el login manualmente
@@ -160,11 +167,86 @@ def register(request):
                 p.save()
                 do_login(request, u)
                 # Y le redireccionamos a la portada
-                return redirect('/')
-
-
+                return redirect('/pagarSuscripcion')
     # Si llegamos al final renderizamos el formulario
     return render(request, "registration/register.html", {'form': form})
+
+
+@login_required
+def pasarpremium(request):
+    user = request.user
+    usuario = Usuario.objects.get(user=user)
+    if request.method == "POST":
+        tarjeta = request.POST['tarjeta']
+        if tarjeta == usuario.tarjeta:
+            usuario.cantPerfiles = 4
+            usuario.is_premium = True
+            usuario.save()
+            return render(request, 'pasar_premium.html', {'cant': 2})
+        else:
+            return render(request, 'pasar_premium.html', {'cant': 0})
+    return render(request, "pasar_premium.html", {'cant': 1})
+
+
+@login_required
+def pasarnormal(request):
+    user = request.user
+    usuario = Usuario.objects.get(user=user)
+    perfiles = Perfil.objects.filter(usuario=usuario)
+    if request.method == "POST":
+        if perfiles.count() <= 2:
+            try:
+                tarjeta = request.POST['tarjeta']
+            except MultiValueDictKeyError:
+                return render(request, "pasar_normal.html", {'cant': 1})
+            if tarjeta == usuario.tarjeta:
+                usuario.cantPerfiles = 2
+                usuario.is_premium = False
+                usuario.save()
+                return render(request, 'pasar_normal.html', {'cant': 3})
+            else:
+                return render(request, 'pasar_normal.html', {'cant': 0})
+        else:
+            p_seleccionado_id = request.POST['nombre']
+            p_seleccionado = Perfil.objects.get(username=p_seleccionado_id)
+            p = Perfil.objects.filter(usuario=usuario)
+            sel = p_seleccionado.selected
+            for per in p:
+                if per != p_seleccionado:
+                    if sel:
+                        per.selected = True
+                        per.save()
+                    p_seleccionado.delete()
+                    break
+            perfiles = Perfil.objects.filter(usuario=usuario)
+            if perfiles.count() > 2:
+                return render(request, 'borrar_perfil.html', {'perfiles': perfiles, 'cant': 10})
+            else:
+                return render(request, "pasar_normal.html", {'cant': 1})
+    if perfiles.count() > 2:
+        return render(request,'borrar_perfil.html', {'perfiles': perfiles, 'cant': 10})
+    else:
+        return render(request, "pasar_normal.html", {'cant': 1})
+
+
+@login_required
+def pagarsuscripcion(request):
+    user = request.user
+    if request.method == "POST":
+        tarjeta = request.POST["tarjeta"]
+        usuario = Usuario.objects.get(user=user)
+        if usuario.tarjeta is None:
+            usuario.tarjeta = tarjeta
+            if usuario.is_premium:
+                usuario.cantPerfiles = 4
+            usuario.save()
+            return render(request, 'pagar_suscripcion.html', {'cant': 2})
+        else:
+            if tarjeta == usuario.tarjeta:
+                return render(request, 'pagar_suscripcion.html', {'cant': 2})
+            else:
+                return render(request, 'pagar_suscripcion.html', {'cant': 0})
+    return render(request, "pagar_suscripcion.html", {'cant': 1})
 
 
 def login(request):
