@@ -11,15 +11,14 @@
 <h2>Eliminar Usuario</h2>
 <br>
 
-<form method="POST">
 
-    {% csrf_token %}
 
     {{ form.as_p }}
 
-      <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModalCenter">
-  Eliminar
-</button>
+<button id="llamador" type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModalCenter">Eliminar</button>
+
+</div></div>
+
     <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -33,13 +32,37 @@
         <p>Esta seguro que quiere eliminar este usuario?</p>
       </div>
       <div class="modal-footer">
-        <input type="button" class="btn btn-danger" data-dismiss="modal" value="Eliminar">
+	<form method="POST"> {% csrf_token %}
+        <input type="hidden" class="username" name="username" />
+        <input type="hidden" class="password" name="password" />
+        <input type="submit" class="btn btn-danger" value="Eliminar">
         <a href="/verDatos" type="button" class="btn btn-primary">Cancelar</a>
+	</form>
       </div>
     </div>
   </div>
 </div>
-</form>
 
-</div></div>
+
+<script>
+
+
+
+$('#exampleModalCenter').on('show.bs.modal', function (event) {
+
+var username = $('#id_email').val()
+var password = $('#id_password').val()
+
+$('#llamador').data('val1',username); //setter
+$('#llamador').data('val2',password); //setter
+
+  var myVal = $(event.relatedTarget).data('val1');
+  $(this).find(".username").val(myVal);
+  var myVal2 = $(event.relatedTarget).data('val2');
+  $(this).find(".password").val(myVal2);
+});
+
+
+</script>
+
 {% endblock %}

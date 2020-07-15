@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+
+
+{% block content %}
+
+<h2>Modificar Perfil</h2>
+{% if cant < 0 %}
+    <h3>El nombre de perfil ya esta en uso</h3>
+    <a class="btn btn-primary" href="/modificarPerfil" role="button">Volver</a>
+{% else %}
+    <div class="col">
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" value={{ perfil }} name="nuevo">
+            <input type="submit" value="Guardar" >
+        </form>
+    </div>
+{% endif %}
+
+{% endblock %}

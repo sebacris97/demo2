@@ -283,14 +283,35 @@ def borrarperfil(request):
         p_seleccionado_id = request.POST['nombre']
         p_seleccionado = Perfil.objects.get(username=p_seleccionado_id)
         p = Perfil.objects.filter(usuario=usuario)
+        sel = p_seleccionado.selected
         for per in p:
-            if per == p_seleccionado:
-                if not p_seleccionado.selected:
+            if per != p_seleccionado:
+                if sel:
                     per.selected = True
-                    per.save(update_fields=['selected'])
+                    per.save()
                 p_seleccionado.delete()
+                break
         return render(request, 'borrar_perfil.html', {"cant": -1})
     return render(request, 'borrar_perfil.html', {"perfiles": perfiles, "cant": cant})
+
+
+@login_required
+def modificarperfil(request):
+    user = request.user
+    usuario = Usuario.objects.get(user=user)
+    perfil = perfil_actual(request)
+    cant = 1
+    if request.method == 'POST':
+        nuevo_per = request.POST['nuevo']
+        per = Perfil.objects.filter(usuario=usuario)
+        for p in per:
+            if p.username == nuevo_per:
+                cant = -1
+                return render(request, 'modificar_perfil.html', {'perfil': perfil, 'cant': cant })
+        perfil.username = nuevo_per
+        perfil.save()
+        return HttpResponseRedirect('/perfil')
+    return render(request, 'modificar_perfil.html', {'perfil': perfil, 'cant': cant })
 
 
 @login_required
@@ -320,13 +341,13 @@ def modificardatos(request):
 @login_required
 def borrarusuario(request):
     user = request.user
-    form = AuthenticationForm
+    form = AuthenticationForm(data=request.POST or None)
     if request.method == "POST":
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             usr = authenticate(username=username, password=password)
-            if usrr is not None:
+            if usr is not None and usr.email == user.email:
                 usr.delete()
                 return HttpResponseRedirect("/")
     return render(request, 'borrar_usuario.html', {'form': form, 'user': user})

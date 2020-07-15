@@ -35,6 +35,7 @@ urlpatterns = [
                 path('selecPerfil/', views.selecperfil, name='seleccionarPerfil'),
                 path('crearPerfil/', views.createprofile, name='crearPerfil'),
                 path('eliminarPerfil/', views.borrarperfil, name='eliminarPerfil'),
+                path('modificarPerfil/', views.modificarperfil, name='modificarPerfil'),
                 path('verLibros/', views.ver_libros, name='verLibros'),
                 path('verLibros/<str:choice>', views.ver_libros, name='verLibros'),
                 path('verCapitulos/<int:pk>', views.ver_capitulos, name='verCapitulos'),
